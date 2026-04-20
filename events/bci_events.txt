@@ -1,0 +1,93 @@
+﻿namespace = bci_events
+
+bci_events.1 = {
+	type = character_event
+	title = bci_events.1.title
+	desc = bci_events.1.desc
+	theme = default
+	left_portrait = {
+		character = scope:currency_scope
+		animation = personality_greedy
+	}
+	opinion = {
+		name = bci_change_influence
+		scope:currency_scope = {
+			change_influence = 1000
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_add_piety
+		scope:currency_scope = {
+			add_piety = 1000
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_add_prestige
+		scope:currency_scope = {
+			add_prestige = 1000
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_add_dynasty_prestige
+		scope:currency_scope = {
+			dynasty = { add_dynasty_prestige = 1000 }
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_add_gold
+		scope:currency_scope = {
+			add_gold = 1000
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_add_legitimacy
+		scope:currency_scope = {
+			add_legitimacy = 1000
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = "Add tyranny"
+		trigger = { tyranny > 0 }
+		scope:currency_scope = {
+			add_tyranny = -1000
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_add_age
+		scope:currency_scope = {
+			change_age = 1
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_sub_age
+		scope:currency_scope = {
+			change_age = -1
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_add_weight
+		scope:currency_scope = {
+			change_current_weight = 10
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_sub_weight
+		scope:currency_scope = {
+			change_current_weight = -10
+		}
+		trigger_event = bci_events.1
+	}
+	option = {
+		name = bci_events.end
+	}
+}

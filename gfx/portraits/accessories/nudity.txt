@@ -1,0 +1,6 @@
+female_clothes_secular_western_nudity_01 = {
+	#entity = { required_tags = ""		shared_pose_entity = torso		entity = female_clothes_secular_western_nudity_01_entity }
+}
+male_clothes_secular_western_nudity_01 = {
+	entity = { required_tags = ""		shared_pose_entity = torso		entity = male_clothes_secular_western_nudity_01_entity }
+}

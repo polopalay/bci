@@ -1,0 +1,67 @@
+﻿bci_wife = {
+	random_traits_list = {
+		count = 1
+		beauty_good_1 = {}
+		beauty_good_2 = {}
+		beauty_good_3 = {}
+		fecund = {}
+	}
+	random_traits_list = {
+		count = 1
+		intellect_good_1 = {}
+		intellect_good_2 = {}
+		intellect_good_3 = {}
+		physique_good_1 = {}
+		physique_good_2 = {}
+		physique_good_3 = {}
+		strong = {}
+		shrewd = {}
+	}
+	random_traits_list = {
+		count = 1
+		humble = {}
+		patient = {}
+		calm = {}
+		just = {}
+		content = {}
+	}
+	random_traits_list = {
+		count = 1
+		humble = {}
+		patient = {}
+		calm = {}
+		just = {}
+		content = {}
+	}
+	random_traits_list = {
+		count = 1
+		forgiving = {}
+		compassionate = {}
+		honest = {}
+	}
+	dynasty = none
+	random_traits = yes
+	culture = root.culture
+	faith = root.faith
+	diplomacy = {
+		min_template_high_skill
+		max_template_high_skill
+	}
+	martial = {
+		min_template_high_skill
+		max_template_high_skill
+	}
+	stewardship = {
+		min_template_high_skill
+		max_template_high_skill
+	}
+	intrigue = {
+		min_template_high_skill
+		max_template_high_skill
+	}
+	learning = {
+		min_template_high_skill
+		max_template_high_skill
+	}
+}
+

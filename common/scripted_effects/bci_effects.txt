@@ -1,0 +1,93 @@
+﻿bci_healing_effect = {
+	remove_character_flag = birth_mother_will_die
+	remove_trait = drunkard
+	remove_trait = hashishiyah
+	remove_trait = rakish
+	remove_trait = reclusive
+	remove_trait = irritable
+	remove_trait = flagellant
+	remove_trait = profligate
+	remove_trait = improvident
+	remove_trait = contrite
+	remove_trait = comfort_eater
+	remove_trait = inappetetic
+	stress_impact = { base = massive_stress_impact_loss }
+	
+	if = {
+		limit = { has_character_modifier = rejected_from_marriage_bed_modifier }
+		remove_character_modifier = rejected_from_marriage_bed_modifier
+	}
+
+	remove_trait = depressed_1
+	remove_trait = depressed_genetic
+	remove_trait = lunatic_1
+	remove_trait = lunatic_genetic
+	remove_trait = possessed_1
+	remove_trait = possessed_genetic
+	remove_trait = one_eyed
+	remove_trait = scarred
+	remove_trait = maimed
+	remove_trait = one_legged
+	remove_trait = disfigured
+	remove_trait = eunuch
+	remove_trait = blind
+	remove_trait = sickly
+	remove_trait = infirm
+	remove_trait = incapable
+	remove_trait = leper
+	remove_trait = wounded_1
+	remove_trait = wounded_2
+	remove_trait = wounded_3
+
+	recover_from_disease_effect = { DISEASE = ill }
+	recover_from_disease_effect = { DISEASE = pneumonic }
+	recover_from_disease_effect = { DISEASE = gout_ridden }
+	recover_from_disease_effect = { DISEASE = typhus }
+	recover_from_disease_effect = { DISEASE = consumption }
+	recover_from_disease_effect = { DISEASE = measles }
+	recover_from_disease_effect = { DISEASE = cancer }
+	recover_from_disease_effect = { DISEASE = great_pox }
+	recover_from_disease_effect = { DISEASE = smallpox }
+	recover_from_disease_effect = { DISEASE = bubonic_plague }
+	recover_from_disease_effect = { DISEASE = lovers_pox }
+	recover_from_disease_effect = { DISEASE = early_great_pox }
+	recover_from_disease_effect = { DISEASE = bubonic_plague }
+	recover_from_disease_effect = { DISEASE = dysentery }
+	recover_from_disease_effect = { DISEASE = ergotism }
+
+	if = {
+		limit = {
+			OR = {
+				current_weight >= 25
+				current_weight <= -25
+			}
+		}
+		change_current_weight = -200
+		change_current_weight = 100
+	}
+
+	remove_trait = albino
+	remove_trait = lisping
+	remove_trait = stuttering
+	remove_trait = giant
+	remove_trait = scaly
+	remove_trait = clubfooted
+	remove_trait = dwarf
+	remove_trait = hunchbacked
+	remove_trait = infertile
+	remove_trait = wheezing
+	remove_trait = spindly
+	remove_trait = bleeder
+	remove_trait = weak
+	remove_trait = dull
+	remove_trait = beauty_bad_1
+	remove_trait = beauty_bad_2
+	remove_trait = beauty_bad_3
+	remove_trait = intellect_bad_1
+	remove_trait = intellect_bad_2
+	remove_trait = intellect_bad_3
+	remove_trait = physique_bad_1
+	remove_trait = physique_bad_2
+	remove_trait = physique_bad_3
+	remove_trait = inbred
+}

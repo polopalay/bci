@@ -1,0 +1,145 @@
+﻿random_yearly_everyone_pulse = {
+	on_actions = {
+		bci_viet_ruler_on_action
+		bci_viet_health_on_action
+		bci_viet_trait_on_action
+		bci_viet_betrothal_on_action
+		bci_viet_wife_on_action
+	}
+}
+
+bci_viet_ruler_on_action = {
+	trigger = {
+		culture = culture:viet
+		is_ai = yes
+		is_ruler = yes
+	}
+	effect = {
+		add_gold = medium_gold_value
+		add_prestige = medium_gold_value
+		add_piety = medium_gold_value
+		dynasty = { add_dynasty_prestige = medium_dynasty_prestige_gain }
+	}	
+}
+
+bci_viet_health_on_action = {
+	trigger = {
+		culture = culture:viet
+		is_ai = yes
+		bci_has_bad_trait_trigger = yes
+	}
+	effect = {
+		bci_healing_effect = yes
+	}	
+}
+
+bci_viet_trait_on_action = {
+	trigger = {
+		culture = culture:viet
+		is_ai = yes
+		is_adult = yes
+		age <= 24
+	}
+	effect = {
+		random_list = {
+			10 = 0
+			0 = {
+				modifier = { has_trait = education_learning  has_trait_rank = { trait = education_learning rank < 5 } add = 10 }
+				change_trait_rank = { trait = education_learning rank = 1 }
+			}
+			0 = {
+				modifier = { has_trait = education_martial  has_trait_rank = { trait = education_martial rank < 5 } add = 10 }
+				change_trait_rank = { trait = education_martial rank = 1 }
+			}
+			0 = {
+				modifier = { has_trait = education_diplomacy  has_trait_rank = { trait = education_diplomacy rank < 5 } add = 10 }
+				change_trait_rank = { trait = education_diplomacy rank = 1 }
+			}
+			0 = {
+				modifier = { has_trait = education_stewardship  has_trait_rank = { trait = education_stewardship rank < 5 } add = 10 }
+				change_trait_rank = { trait = education_stewardship rank = 1 }
+			}
+			0 = {
+				modifier = { has_trait = education_intrigue  has_trait_rank = { trait = education_intrigue rank < 5 } add = 10 }
+				change_trait_rank = { trait = education_intrigue rank = 1 }
+			}
+			0 = {
+				modifier = { has_trait_rank = { trait = physique_good rank < 2 } add = 2 }
+				change_trait_rank = { trait = physique_good rank = 1 }
+			}
+			0 = {
+				modifier = { has_trait_rank = { trait = intellect_good rank < 2 } add = 2 }
+				change_trait_rank = { trait = intellect_good rank = 1 }
+			}
+			0 = {
+				modifier = { has_trait_rank = { trait = beauty_good rank < 1 } add = 2 }
+				change_trait_rank = { trait = beauty_good rank = 1 }
+			}
+			0 = {
+				modifier = { NOT = { has_trait = fecund } add = 3 }
+				add_trait = fecund
+			}
+			0 = {
+				modifier = { NOT = { has_trait = strong } add = 3 }
+				add_trait = strong
+			}
+			0 = {
+				modifier = { NOT = { has_trait = shrewd } add = 3 }
+				add_trait = shrewd
+			}
+		}
+	}	
+}
+
+bci_viet_betrothal_on_action = {
+	trigger = {
+		culture = culture:viet
+		is_ai = yes
+		is_female = no
+		is_adult = no
+		age >= 8
+		is_betrothed = no
+	}
+	effect = {
+		create_character = {
+			template = bci_wife
+			age = { 2 6 }
+			location = root.location
+			culture = root.culture
+			faith = root.faith
+			gender_female_chance = 100
+			save_scope_as = bci_betrothal_target
+		}
+		create_betrothal = scope:bci_betrothal_target
+		if = {
+			limit = { is_ruler = yes }
+			add_courtier = scope:bci_betrothal_target
+		}
+		else = {
+			liege = { add_courtier = scope:bci_betrothal_target }
+		}
+	}	
+}
+
+bci_viet_wife_on_action = {
+	trigger = {
+		culture = culture:viet
+		is_ai = yes
+		is_female = no
+		is_adult = yes
+		age <= 50
+		is_married = no
+	}
+	effect = {
+		create_character = {
+			template = bci_wife
+			age = { 16 25 }
+			location = root.location
+			culture = root.culture
+			faith = root.faith
+			gender_female_chance = 100
+			save_scope_as = bci_betrothal_target
+		}
+		marry = scope:bci_betrothal_target
+	}	
+}
