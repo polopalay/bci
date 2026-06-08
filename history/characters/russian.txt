@@ -10794,7 +10794,7 @@
 	female = yes
 	dynasty = 705 # Rurikovich
 	religion = "adamites"
-	culture = "russian"
+	culture = "orthodox"
 	trait = brave
 	trait = calm
 	trait = lustful
@@ -10806,11 +10806,35 @@
 		effect = {
 			add_character_flag = has_scripted_appearance
 			add_character_modifier = sbs_buff
-			add_trait = lifestyle_prostitute
-			add_trait = deviant
 			add_trait = disinherited
 			add_trait = denounced
-		}	
+			add_character_modifier = sbs_buff
+			add_secret = { type = secret_deviant }
+			create_artifact = {
+				name = master_dildo
+				rarity = masterwork
+				description = master_dildo_desc
+				type = magic_creation
+				modifier = master_dildo_modifier
+				visuals = master_dildo
+				template = master_dildo_template
+				max_durability = 100
+				wealth = 100
+				quality = 100
+			}
+		}
+	}
+	1063.1.1 = {
+		effect = {
+			set_relation_lover = character:522
+			had_sex_with_effect = { CHARACTER = character:522 PREGNANCY_CHANCE = 100 }
+		}
+	}
+	1065.1.1 = {
+		effect = {
+			had_sex_with_effect = { CHARACTER = character:762 PREGNANCY_CHANCE = 100 }
+			give_nickname = nick_the_unfaithful
+		}
 	}
 	1099.1.1 = {
 		dynasty_house = house_rurikid_sviatoslavich

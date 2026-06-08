@@ -637,7 +637,7 @@
 	diplomacy = 4
 	intrigue = 8
 	stewardship = 6
-	religion = "adamites"
+	religion = "catholic"
 	culture = french
 	trait = content
 	trait = humble
@@ -652,11 +652,30 @@
 		effect = {
 			add_character_flag = has_scripted_appearance
 			add_character_modifier = sbs_buff
-			add_trait = lifestyle_prostitute
-			add_trait = deviant
 			add_trait = disinherited
 			add_trait = denounced
+			add_character_modifier = sbs_buff
+			give_nickname = nick_the_unchaste
+			add_secret = { type = secret_deviant }
 		}	
+	}
+	1065.1.1 = {
+		effect = {
+			set_relation_lover = character:1182
+			had_sex_with_effect = { CHARACTER = character:1182 PREGNANCY_CHANCE = 100 }
+			create_artifact = {
+				name = master_dildo
+				rarity = masterwork
+				description = master_dildo_desc
+				type = magic_creation
+				modifier = master_dildo_modifier
+				visuals = master_dildo
+				template = master_dildo_template
+				max_durability = 100
+				wealth = 100
+				quality = 100
+			}
+		}
 	}
 	1087.12.27 = {
 	}

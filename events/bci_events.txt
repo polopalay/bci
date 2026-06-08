@@ -9,7 +9,7 @@ bci_events.1 = {
 		character = scope:currency_scope
 		animation = personality_greedy
 	}
-	opinion = {
+	option = {
 		name = bci_change_influence
 		scope:currency_scope = {
 			change_influence = 1000
@@ -59,20 +59,20 @@ bci_events.1 = {
 		}
 		trigger_event = bci_events.1
 	}
-	option = {
-		name = bci_add_age
-		scope:currency_scope = {
-			change_age = 1
-		}
-		trigger_event = bci_events.1
-	}
-	option = {
-		name = bci_sub_age
-		scope:currency_scope = {
-			change_age = -1
-		}
-		trigger_event = bci_events.1
-	}
+	#option = {
+	#	name = bci_add_age
+	#	scope:currency_scope = {
+	#		change_age = 1
+	#	}
+	#	trigger_event = bci_events.1
+	#}
+	#option = {
+	#	name = bci_sub_age
+	#	scope:currency_scope = {
+	#		change_age = -1
+	#	}
+	#	trigger_event = bci_events.1
+	#}
 	option = {
 		name = bci_add_weight
 		scope:currency_scope = {

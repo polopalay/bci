@@ -548,7 +548,7 @@
 	dna = 765_princess_swietoslawa
 	female = yes
 	dynasty = 699
-	religion = "adamites"
+	religion = "catholic"
 	culture = "polish"
 	trait = wrathful
 	trait = callous
@@ -561,11 +561,34 @@
 		effect = {
 			add_character_flag = has_scripted_appearance
 			add_character_modifier = sbs_buff
-			add_trait = lifestyle_prostitute
-			add_trait = deviant
 			add_trait = disinherited
 			add_trait = denounced
+			add_character_modifier = sbs_buff
+			add_secret = { type = secret_deviant }
 		}	
+	}
+	1064.1.1 = {
+		effect = {
+			set_relation_lover = character:762
+		}
+	}
+	1066.1.1 = {
+		effect = {
+			had_sex_with_effect = { CHARACTER = character:762 PREGNANCY_CHANCE = 100 }
+			give_nickname = nick_the_unfaithful
+			create_artifact = {
+				name = master_dildo
+				rarity = masterwork
+				description = master_dildo_desc
+				type = magic_creation
+				modifier = master_dildo_modifier
+				visuals = master_dildo
+				template = master_dildo_template
+				max_durability = 100
+				wealth = 100
+				quality = 100
+			}
+		}
 	}
 	1126.9.1 = {
 	}

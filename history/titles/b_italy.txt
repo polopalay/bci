@@ -1,0 +1,36 @@
+b_canossa = {
+	1066.1.1 = {
+		holder = 7757
+	}	
+}
+b_impruneta = {
+	1047.1.1 = {
+		holder = 367
+	}	
+}
+
+b_empoli = {
+	1064.1.1 = {
+		holder = 1183
+	}	
+}
+
+b_cento = {
+	1066.1.1 = {
+		holder = 41552
+	}	
+}
+
+b_chiusi = {
+	1064.1.1 = {
+		holder = 765
+	}	
+}
+
+b_asciano = {
+	1063.1.1 = {
+		holder = 161257
+	}	
+}
+
+

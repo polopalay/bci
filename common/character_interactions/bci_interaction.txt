@@ -875,6 +875,10 @@ bci_trait = {
 		flag = beauty_good
 		localization = trait_beauty_good
 	}
+	send_option = {
+		flag = governor
+		localization = trait_governor
+	}
 
 	on_accept = {
 		scope:recipient = {
@@ -1278,6 +1282,16 @@ bci_trait = {
 				}
 				else = { set_trait_rank = { trait = beauty_good rank = 0 } }
 			}
+			else_if = {
+				limit = { scope:governor = yes }
+				if = {
+					limit = { NOT = { has_trait = governor } }
+					add_trait = governor
+					add_trait_xp = { trait = governor value = 100 }
+
+				}
+				else = { remove_trait = governor }
+			}
 		}
 	}
 }
@@ -1456,6 +1470,14 @@ bci_alert_sexsual = {
 	auto_accept = yes
 
 	send_option = {
+		flag = sbs_buff
+		localization = sbs_buff
+	}
+	send_option = {
+		flag = sbs_generals
+		localization = sbs_generals
+	}
+	send_option = {
 		is_shown = {
 			scope:recipient = { NOT = { has_sexuality = homosexual } }
 		}
@@ -1480,6 +1502,14 @@ bci_alert_sexsual = {
 	on_accept = {
 		scope:recipient = {
 			if = {
+				limit = { scope:sbs_buff = yes }
+				add_character_modifier = sbs_buff
+			}
+			else_if = {
+				limit = { scope:sbs_generals = yes }
+				add_character_modifier = sbs_generals
+			}
+			else_if = {
 				limit = { scope:homosexual = yes }
 				set_sexuality = homosexual
 			}
