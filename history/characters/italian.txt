@@ -72,18 +72,18 @@
 	dna = 7757_duchess_matilda
 	female = yes
 	dynasty_house = house_canossa
-	martial = 6
+	martial = 12
 	diplomacy = 9
-	intrigue = 9
+	intrigue = 12
 	stewardship = 10
 	learning = 12
-	prowess = 6
+	prowess = 40
 	disallow_random_traits = yes
-	religion = "catholic"
+	religion = "adamites"
 	culture = "italian"
 	trait = diligent
 	trait = calm
-	trait = zealous
+	trait = lustful
 	trait = education_learning_3
 	sexuality = bisexual
 	sexuality = heterosexual
@@ -110,16 +110,16 @@
 			refund_all_perks = yes
 			remove_all_perk_lifestyle_traits_effect = yes
 			add_learning_lifestyle_perk_points = -10
-			add_perk = faithful_perk
-			add_perk = zealous_proselytizer_perk
-			add_perk = religious_icon_perk
-			add_perk = prophet_perk
-			add_perk = clerical_justifications_perk
-			add_perk = church_and_state_perk
-			add_perk = radiant_perk
-			add_perk = defender_of_the_faith_perk
-			add_perk = theologian_perk
-			add_trait = theologian
+			add_perk = stalwart_leader_perk
+			add_perk = courtship_perk
+			add_perk = promising_prospects_perk
+			add_perk = loyalty_and_respect_perk
+			add_perk = chivalric_dominance_perk
+			add_perk = never_back_down_perk
+			add_perk = kingsguard_perk
+			add_perk = peacemaker_perk
+			add_perk = gallant_perk
+			add_trait = gallant
 			add_perk = pedagogy_perk
 			add_perk = open_minded_perk
 			add_piety = 750
@@ -138,20 +138,8 @@
 			set_relation_friend = { reason = friend_generic_history target = character:7755 } # her mother, Beatrice
 			add_secret = { type = secret_deviant }
 			had_sex_with_effect = { CHARACTER = character:1316 PREGNANCY_CHANCE = 100 }
-			add_character_modifier = sbs_buff
 			give_nickname = nick_the_lewd
-			create_artifact = {
-				name = master_dildo
-				rarity = masterwork
-				description = master_dildo_desc
-				type = magic_creation
-				modifier = master_dildo_modifier
-				visuals = master_dildo
-				template = master_dildo_template
-				max_durability = 100
-				wealth = 100
-				quality = 100
-			}
+			bci_lust_effect = yes
 		}
 	}
 	1115.7.24 = {

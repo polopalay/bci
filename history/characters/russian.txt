@@ -10793,8 +10793,14 @@
 	dna = 161257_queen_wyszeslawa
 	female = yes
 	dynasty = 705 # Rurikovich
+	martial = 12
+	diplomacy = 6
+	intrigue = 4
+	stewardship = 4
+	learning = 4
+	prowess = 40
 	religion = "adamites"
-	culture = "orthodox"
+	culture = "russian"
 	trait = brave
 	trait = calm
 	trait = lustful
@@ -10805,23 +10811,6 @@
 		birth = "1047.1.1"
 		effect = {
 			add_character_flag = has_scripted_appearance
-			add_character_modifier = sbs_buff
-			add_trait = disinherited
-			add_trait = denounced
-			add_character_modifier = sbs_buff
-			add_secret = { type = secret_deviant }
-			create_artifact = {
-				name = master_dildo
-				rarity = masterwork
-				description = master_dildo_desc
-				type = magic_creation
-				modifier = master_dildo_modifier
-				visuals = master_dildo
-				template = master_dildo_template
-				max_durability = 100
-				wealth = 100
-				quality = 100
-			}
 		}
 	}
 	1063.1.1 = {
@@ -10832,12 +10821,17 @@
 	}
 	1065.1.1 = {
 		effect = {
-			had_sex_with_effect = { CHARACTER = character:762 PREGNANCY_CHANCE = 100 }
-			give_nickname = nick_the_unfaithful
+			bci_lust_effect = yes
 		}
 	}
 	1099.1.1 = {
 		dynasty_house = house_rurikid_sviatoslavich
+		effect = {
+			create_landless_adventurer_title_effect = {
+				REASON = flag:voluntary
+				FLAVOR_CHAR = scope:recipient
+			}
+		}
 	}
 }
 

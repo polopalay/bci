@@ -580,11 +580,13 @@
 	diplomacy = 8
 	intrigue = 8
 	stewardship = 8
-	religion = "orthodox"
+	learning = 7
+	prowess = 30
+	religion = "adamites"
 	culture = "georgian"
 	trait = ambitious #Involved in the second imperial coup 
 	trait = diligent
-	trait = generous #Noted for her charity
+	trait = lustful #Noted for her charity
 	#trait = curious
 	trait = education_diplomacy_3
 	sexuality = bisexual
@@ -595,9 +597,6 @@
 		birth = "1050.1.1"
 		effect = {
 			add_character_flag = has_scripted_appearance
-			add_trait = disinherited
-			add_trait = denounced
-			add_secret = { type = secret_deviant }
 		}
 	}
 	#1066.1.2 = {
@@ -608,22 +607,10 @@
 	1066.1.1 = {
 		add_spouse = 1736
 		effect = {
-			add_character_modifier = sbs_buff
 			set_relation_lover = character:1732
 			had_sex_with_effect = { CHARACTER = character:1732 PREGNANCY_CHANCE = 100 }
 			give_nickname = nick_the_unchaste
-			create_artifact = {
-				name = master_dildo
-				rarity = masterwork
-				description = master_dildo_desc
-				type = magic_creation
-				modifier = master_dildo_modifier
-				visuals = master_dildo
-				template = master_dildo_template
-				max_durability = 100
-				wealth = 100
-				quality = 100
-			}
+			bci_lust_effect = yes
 		}
 	}
 	1118.1.1 = {
@@ -631,6 +618,12 @@
 		#	remove_trait = curious
 		#	add_trait = education_diplomacy_3
 		#}
+		effect = {
+			create_landless_adventurer_title_effect = {
+				REASON = flag:voluntary
+				FLAVOR_CHAR = scope:recipient
+			}
+		}
 	}
 }
 

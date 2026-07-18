@@ -91,3 +91,30 @@
 	remove_trait = physique_bad_3
 	remove_trait = inbred
 }
+
+bci_lust_effect = {
+	add_perk = like_weed_in_a_garden_perk
+	add_perk = unshackled_lust_perk
+	add_perk = subtle_desire_perk
+	add_perk = mortal_adoration_perk
+	add_perk = enticing_opportunity_perk
+	add_perk = home_advantage_perk
+	add_perk = graceful_recovery_perk
+	add_perk = smooth_operator_perk
+	add_perk = seducer_perk
+	add_trait = seducer
+
+	add_character_modifier = sbs_buff
+	add_trait = deviant
+	if = {
+		limit = { is_female = yes }
+		add_trait = sbs_lesser_succubus
+	}
+	else = {
+		add_trait = sbs_lesser_demon
+	}
+
+	add_trait = fecund
+	add_trait = strong
+	add_trait = physique_good_3
+}

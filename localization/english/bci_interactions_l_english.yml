@@ -1,5 +1,8 @@
 ﻿l_english:
  bci_change: "Edit Character"
+ bci_sex: "Sex"
+ bci_accolade: "Accolade"
+ bci_perk_points: "Perk Points"
  bci_switch_character: "Change Character"
  bci_kill: "Kill"
  bci_add_character: "Add to Court"

@@ -548,23 +548,24 @@
 	dna = 765_princess_swietoslawa
 	female = yes
 	dynasty = 699
-	religion = "catholic"
+	martial = 4
+	diplomacy = 6
+	intrigue = 12
+	stewardship = 4
+	learning = 4
+	prowess = 30
+	religion = "adamites"
 	culture = "polish"
 	trait = wrathful
 	trait = callous
 	trait = lustful
-	trait = education_intrigue_2
+	trait = education_intrigue_3
 	father = 760
 	mother = 13501
 	1048.1.2 = {
 		birth = "1048.1.2"
 		effect = {
 			add_character_flag = has_scripted_appearance
-			add_character_modifier = sbs_buff
-			add_trait = disinherited
-			add_trait = denounced
-			add_character_modifier = sbs_buff
-			add_secret = { type = secret_deviant }
 		}	
 	}
 	1064.1.1 = {
@@ -576,21 +577,16 @@
 		effect = {
 			had_sex_with_effect = { CHARACTER = character:762 PREGNANCY_CHANCE = 100 }
 			give_nickname = nick_the_unfaithful
-			create_artifact = {
-				name = master_dildo
-				rarity = masterwork
-				description = master_dildo_desc
-				type = magic_creation
-				modifier = master_dildo_modifier
-				visuals = master_dildo
-				template = master_dildo_template
-				max_durability = 100
-				wealth = 100
-				quality = 100
-			}
+			bci_lust_effect = yes
 		}
 	}
 	1126.9.1 = {
+		effect = {
+			create_landless_adventurer_title_effect = {
+				REASON = flag:voluntary
+				FLAVOR_CHAR = scope:recipient
+			}
+		}
 	}
 }
 	

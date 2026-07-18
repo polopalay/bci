@@ -22,6 +22,58 @@
 	}
 }
 
+bci_sex = {
+	icon = carn_sex_interaction
+	common_interaction = yes
+	auto_accept = yes
+	use_diplomatic_range = no
+	ignores_pending_interaction_block = yes
+
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+		}
+	}
+
+	on_send = {
+		scope:recipient = {
+			top_liege = {
+				every_vassal_or_below = {
+					every_courtier = {
+						limit = { is_attracted_to_gender_of = scope:recipient is_adult = yes is_knight = yes is_lowborn = yes has_std_trigger = no }
+						prostitute_effect = { PROSTITUTE = scope:recipient PREGNANCY_CHANCE = pregnancy_chance }
+					}
+				}
+			}
+		}
+	}
+}
+
+bci_accolade = {
+	icon = literalist_debate_interaction
+	common_interaction = yes
+	auto_accept = yes
+	use_diplomatic_range = no
+	ignores_pending_interaction_block = yes
+
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+			is_ruler = yes
+		}
+		scope:recipient = scope:actor
+	}
+
+	on_accept = {
+		scope:actor = {
+			every_knight = {
+				limit = { is_acclaimed = yes }
+				accolade = { add_glory = monumental_glory_gain }
+			}
+		}
+	}
+}
+
 bci_copy_dna = {
 	icon = dna_transfer_interaction_counts_only
 	common_interaction = yes
@@ -36,7 +88,7 @@ bci_copy_dna = {
 		scope:recipient != scope:actor
 	}
 
-	on_send = {
+	on_accept = {
 		scope:actor = {
 			copy_inheritable_appearance_from = scope:recipient
 		}
@@ -664,6 +716,63 @@ bci_heal = {
 	}
 }
 
+bci_perk_points = {
+	icon = forgiving
+	auto_accept = yes
+	use_diplomatic_range = no
+	ignores_pending_interaction_block = yes
+	common_interaction = yes
+
+	is_shown = {
+		scope:actor = { is_ai = no }
+	}
+	send_option = {
+		flag = education_intrigue
+		localization = trait_education_intrigue
+	}
+	send_option = {
+		flag = education_diplomacy
+		localization = trait_education_diplomacy
+	}
+	send_option = {
+		flag = education_stewardship
+		localization = trait_education_stewardship
+	}
+	send_option = {
+		flag = education_martial
+		localization = trait_education_martial
+	}
+	send_option = {
+		flag = education_learning
+		localization = trait_education_learning
+	}
+	send_options_exclusive = yes
+	on_accept = {
+		scope:recipient = {
+			if = {
+				limit = { scope:education_intrigue = yes }
+				add_intrigue_lifestyle_perk_points = 1
+			}
+			else_if = {
+				limit = { scope:education_diplomacy = yes }
+				add_diplomacy_lifestyle_perk_points = 1
+			}
+			else_if = {
+				limit = { scope:education_stewardship = yes }
+				add_stewardship_lifestyle_perk_points = 1
+			}
+			else_if = {
+				limit = { scope:education_martial = yes }
+				add_martial_lifestyle_perk_points = 1
+			}
+			else_if = {
+				limit = { scope:education_learning = yes }
+				add_learning_lifestyle_perk_points = 1
+			}
+		}
+	}
+}
+
 bci_trait = {
 	icon = wrathful
 	auto_accept = yes
@@ -878,6 +987,18 @@ bci_trait = {
 	send_option = {
 		flag = governor
 		localization = trait_governor
+	}
+	send_option = {
+		flag = lifestyle_blademaster
+		localization = trait_lifestyle_blademaster
+	}
+	send_option = {
+		flag = lifestyle_reveler
+		localization = trait_lifestyle_reveler
+	}
+	send_option = {
+		flag = lifestyle_hunter
+		localization = trait_lifestyle_hunter
 	}
 
 	on_accept = {
@@ -1288,9 +1409,36 @@ bci_trait = {
 					limit = { NOT = { has_trait = governor } }
 					add_trait = governor
 					add_trait_xp = { trait = governor value = 100 }
-
 				}
 				else = { remove_trait = governor }
+			}
+			else_if = {
+				limit = { scope:lifestyle_blademaster = yes }
+				if = {
+					limit = { NOT = { has_trait = lifestyle_blademaster } }
+					add_trait = lifestyle_blademaster
+					add_trait_xp = { trait = lifestyle_blademaster value = 100 }
+				}
+				else = { remove_trait = lifestyle_blademaster }
+			}
+			else_if = {
+				limit = { scope:lifestyle_reveler = yes }
+				if = {
+					limit = { NOT = { has_trait = lifestyle_reveler } }
+					add_trait = lifestyle_reveler
+					add_trait_xp = { trait = lifestyle_reveler value = 100 }
+				}
+				else = { remove_trait = lifestyle_reveler }
+			}
+			else_if = {
+				limit = { scope:lifestyle_hunter = yes }
+				if = {
+					limit = { NOT = { has_trait = lifestyle_hunter } }
+					add_trait = lifestyle_hunter
+					add_trait_xp = { trait = lifestyle_hunter track = hunter value = 100 }
+					add_trait_xp = { trait = lifestyle_hunter track = falconer value = 100 }
+				}
+				else = { remove_trait = lifestyle_hunter }
 			}
 		}
 	}
@@ -1478,6 +1626,10 @@ bci_alert_sexsual = {
 		localization = sbs_generals
 	}
 	send_option = {
+		flag = sbs_seal
+		localization = sbs_seal
+	}
+	send_option = {
 		is_shown = {
 			scope:recipient = { NOT = { has_sexuality = homosexual } }
 		}
@@ -1503,11 +1655,15 @@ bci_alert_sexsual = {
 		scope:recipient = {
 			if = {
 				limit = { scope:sbs_buff = yes }
-				add_character_modifier = sbs_buff
+				add_character_modifier = { modifier = sbs_buff years = 100 }
 			}
 			else_if = {
 				limit = { scope:sbs_generals = yes }
-				add_character_modifier = sbs_generals
+				add_character_modifier = { modifier = sbs_generals years = 100 }
+			}
+			else_if = {
+				limit = { scope:sbs_seal = yes }
+				add_character_modifier = sbs_seal
 			}
 			else_if = {
 				limit = { scope:homosexual = yes }
