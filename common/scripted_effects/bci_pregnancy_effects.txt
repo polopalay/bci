@@ -42,7 +42,7 @@
 			trigger = {
 				OR = {
 					is_immortal = no
-					has_character_modifier = sbs_buff
+					has_character_modifier = bci_long_life
 				}
 			}
 			show_as_tooltip = {

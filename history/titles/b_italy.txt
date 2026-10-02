@@ -1,12 +1,7 @@
 b_canossa = {
 	1066.1.1 = {
 		holder = 7757
-	}	
-}
-b_impruneta = {
-	1047.1.1 = {
-		holder = 367
-	}	
+	}
 }
 
 b_empoli = {
@@ -21,16 +16,20 @@ b_cento = {
 	}	
 }
 
-b_chiusi = {
-	1064.1.1 = {
-		holder = 765
-	}	
-}
-
-b_asciano = {
+b_montalcino = {
 	1063.1.1 = {
 		holder = 161257
-	}	
+	}
 }
 
+b_reggio_emilia = {
+	1064.1.1 = {
+		holder = 765
+	}
+}
 
+b_volterra = {
+	1066.2.1 = {
+		holder = 367
+	}
+}

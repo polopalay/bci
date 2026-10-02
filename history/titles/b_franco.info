@@ -1,0 +1,40 @@
+b_duren = {
+	1178.1.1 = {
+		holder = 161257
+	}	
+}
+
+b_eschweiler = {
+	1178.1.1 = {
+		holder = 7757
+	}
+}
+b_prum = {
+	1178.1.1 = {
+		holder = 367
+	}	
+}
+
+b_kreusnach = {
+	1178.1.1 = {
+		holder = 1183
+	}	
+}
+
+b_rockenhausen = {
+	1178.1.1 = {
+		holder = 41552
+	}	
+}
+
+b_letningen = {
+	1178.1.1 = {
+		holder = 765
+	}
+}
+
+b_volterra = {
+	1066.1.1 = {
+		holder = 367
+	}
+}

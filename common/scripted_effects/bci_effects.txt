@@ -1,5 +1,6 @@
 ﻿bci_healing_effect = {
 	remove_character_flag = birth_mother_will_die
+	stress_impact = { base = massive_stress_impact_loss }
 	remove_trait = drunkard
 	remove_trait = hashishiyah
 	remove_trait = rakish
@@ -11,13 +12,6 @@
 	remove_trait = contrite
 	remove_trait = comfort_eater
 	remove_trait = inappetetic
-	stress_impact = { base = massive_stress_impact_loss }
-	
-	if = {
-		limit = { has_character_modifier = rejected_from_marriage_bed_modifier }
-		remove_character_modifier = rejected_from_marriage_bed_modifier
-	}
-
 	remove_trait = depressed_1
 	remove_trait = depressed_genetic
 	remove_trait = lunatic_1
@@ -30,6 +24,8 @@
 	remove_trait = one_legged
 	remove_trait = disfigured
 	remove_trait = eunuch
+	remove_trait = eunuch_1
+	remove_trait = beardless_eunuch
 	remove_trait = blind
 	remove_trait = sickly
 	remove_trait = infirm
@@ -38,7 +34,6 @@
 	remove_trait = wounded_1
 	remove_trait = wounded_2
 	remove_trait = wounded_3
-
 	recover_from_disease_effect = { DISEASE = ill }
 	recover_from_disease_effect = { DISEASE = pneumonic }
 	recover_from_disease_effect = { DISEASE = gout_ridden }
@@ -51,21 +46,8 @@
 	recover_from_disease_effect = { DISEASE = bubonic_plague }
 	recover_from_disease_effect = { DISEASE = lovers_pox }
 	recover_from_disease_effect = { DISEASE = early_great_pox }
-	recover_from_disease_effect = { DISEASE = bubonic_plague }
 	recover_from_disease_effect = { DISEASE = dysentery }
 	recover_from_disease_effect = { DISEASE = ergotism }
-
-	if = {
-		limit = {
-			OR = {
-				current_weight >= 25
-				current_weight <= -25
-			}
-		}
-		change_current_weight = -200
-		change_current_weight = 100
-	}
-
 	remove_trait = albino
 	remove_trait = lisping
 	remove_trait = stuttering
@@ -90,31 +72,120 @@
 	remove_trait = physique_bad_2
 	remove_trait = physique_bad_3
 	remove_trait = inbred
+	remove_trait = adulterer
+	remove_trait = fornicator
+	remove_trait = incestuous
+	remove_trait = sodomite
+	remove_trait = deviant
+	remove_trait = cannibal
+	remove_trait = witch
+	remove_trait = excommunicated
+	remove_trait = murderer
+	remove_trait = kinslayer_1
+	remove_trait = kinslayer_2
+	remove_trait = kinslayer_3
+	if = {
+		limit = { has_character_modifier = rejected_from_marriage_bed_modifier }
+		remove_character_modifier = rejected_from_marriage_bed_modifier
+	}
+	if = {
+		limit = { has_character_modifier = sbs_seal }
+		remove_character_modifier = sbs_seal
+	}
+	if = {
+		limit = { has_character_modifier = sbs_debuff }
+		remove_character_modifier = sbs_debuff
+	}
+	if = {
+		limit = { has_character_modifier = stanky_modifier }
+		remove_character_modifier = stanky_modifier
+	}
+	if = {
+		limit = { has_character_modifier = confused_modifier }
+		remove_character_modifier = confused_modifier
+	}
+	if = {
+		limit = { has_character_modifier = stress_smelling_of_sweat }
+		remove_character_modifier = stress_smelling_of_sweat
+	}
+	if = {
+		limit = { has_character_modifier = party_baron_murdered_the_joy_of_life_modifier }
+		remove_character_modifier = party_baron_murdered_the_joy_of_life_modifier
+	}
+	if = {
+		limit = { has_character_modifier = totally_lost_modifier }
+		remove_character_modifier = totally_lost_modifier
+	}
+	if = {
+		limit = { has_character_modifier = bad_omen_modifier }
+		remove_character_modifier = bad_omen_modifier
+	}
+	if = {
+		limit = { has_character_modifier = lost_in_lust_modifier }
+		remove_character_modifier = lost_in_lust_modifier
+	}
+	if = {
+		limit = { has_character_modifier = intrigue_starved_and_deprived_modifier }
+		remove_character_modifier = intrigue_starved_and_deprived_modifier
+	}
+	if = {
+		limit = {
+			OR = {
+				current_weight >= 25
+				current_weight <= -25
+			}
+		}
+		change_current_weight = -200
+		change_current_weight = 100
+	}
 }
 
 bci_lust_effect = {
-	add_perk = like_weed_in_a_garden_perk
-	add_perk = unshackled_lust_perk
-	add_perk = subtle_desire_perk
-	add_perk = mortal_adoration_perk
-	add_perk = enticing_opportunity_perk
-	add_perk = home_advantage_perk
-	add_perk = graceful_recovery_perk
-	add_perk = smooth_operator_perk
-	add_perk = seducer_perk
-	add_trait = seducer
-
-	add_character_modifier = sbs_buff
-	add_trait = deviant
 	if = {
-		limit = { is_female = yes }
-		add_trait = sbs_lesser_succubus
+		limit = { NOT = { has_character_modifier = bci_long_life } }
+		add_character_modifier = bci_long_life
 	}
-	else = {
-		add_trait = sbs_lesser_demon
-	}
-
 	add_trait = fecund
 	add_trait = strong
 	add_trait = physique_good_3
+
+	if = {
+		limit = {
+			free_personal_tenet_slots > 0
+			NOT = { has_personal_tenet = tenet_carnal_exaltation }
+			root.rite = {
+				has_at_least_tenet_status = {
+					tenet = tenet_carnal_exaltation
+					status = known
+				}
+			}
+		}
+		set_personal_tenet = tenet_carnal_exaltation
+	}
+	if = {
+		limit = {
+			free_personal_tenet_slots > 0
+			NOT = { has_personal_tenet = tenet_polyamory }
+			root.rite = {
+				has_at_least_tenet_status = {
+					tenet = tenet_polyamory
+					status = known
+				}
+			}
+		}
+		set_personal_tenet = tenet_polyamory
+	}
+	if = {
+		limit = {
+			free_personal_tenet_slots > 0
+			NOT = { has_personal_tenet = tenet_natural_primitivism }
+			root.rite = {
+				has_at_least_tenet_status = {
+					tenet = tenet_natural_primitivism
+					status = known
+				}
+			}
+		}
+		set_personal_tenet = tenet_natural_primitivism
+	}
 }

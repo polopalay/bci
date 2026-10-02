@@ -4,4 +4,5 @@ tags={
 	"Events"
 }
 name="Basic cheat interaction"
-supported_version="1.19.*"
+supported_version="1.20.*"
+remote_file_id="3429856202"

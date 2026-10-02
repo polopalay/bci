@@ -17,59 +17,8 @@
 		}
 		scope:actor = {
 			save_scope_as = actor_scope
-			trigger_event = bci_events.1
-		}
-	}
-}
-
-bci_sex = {
-	icon = carn_sex_interaction
-	common_interaction = yes
-	auto_accept = yes
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-		}
-	}
-
-	on_send = {
-		scope:recipient = {
-			top_liege = {
-				every_vassal_or_below = {
-					every_courtier = {
-						limit = { is_attracted_to_gender_of = scope:recipient is_adult = yes is_knight = yes is_lowborn = yes has_std_trigger = no }
-						prostitute_effect = { PROSTITUTE = scope:recipient PREGNANCY_CHANCE = pregnancy_chance }
-					}
-				}
-			}
-		}
-	}
-}
-
-bci_accolade = {
-	icon = literalist_debate_interaction
-	common_interaction = yes
-	auto_accept = yes
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-			is_ruler = yes
-		}
-		scope:recipient = scope:actor
-	}
-
-	on_accept = {
-		scope:actor = {
-			every_knight = {
-				limit = { is_acclaimed = yes }
-				accolade = { add_glory = monumental_glory_gain }
-			}
+			save_scope_as = root
+			trigger_event = bci_events.0001
 		}
 	}
 }
@@ -91,118 +40,6 @@ bci_copy_dna = {
 	on_accept = {
 		scope:actor = {
 			copy_inheritable_appearance_from = scope:recipient
-		}
-	}
-}
-
-bci_change_religion = {
-	icon = demand_conversion_interaction
-	auto_accept = yes
-	use_diplomatic_range = no
-	common_interaction = yes
-	ignores_pending_interaction_block = yes
-
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-		}
-	}
-
-	send_option = {
-		flag = bci_faith
-		localization = "All Vassal"
-	}
-	send_options_exclusive = no
-
-	on_accept = {
-		scope:recipient = {
-			if = {
-				limit = { NOT = { scope:actor.faith = scope:recipient.faith } }
-				set_character_faith_with_conversion = scope:actor.faith
-			}
-			if = {
-				limit = { is_landed = yes }
-				capital_province.county = {
-					set_county_faith = scope:actor.faith
-				}
-			}
-			if = {
-				limit = { scope:bci_faith = yes }
-				every_courtier = {
-					limit = { is_close_family_of = prev }
-					set_character_faith_with_conversion = scope:actor.faith
-				}
-				every_vassal = {
-					limit = { primary_title.tier >= tier_county }
-					set_character_faith_with_conversion = scope:actor.faith
-					if = {
-						limit = { is_landed = yes }
-						capital_province.county = {
-							set_county_faith = scope:actor.faith
-						}
-					}
-					every_courtier = {
-						limit = { is_close_family_of = prev }
-						set_character_faith_with_conversion = scope:actor.faith
-					}
-				}
-			}
-		}
-	}
-}
-
-bci_change_culture = {
-	icon = icon_culture
-	auto_accept = yes
-	use_diplomatic_range = no
-	common_interaction = yes
-	ignores_pending_interaction_block = yes
-
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-		}
-	}
-
-	send_option = {
-		flag = vassal
-		localization = "All Vassal"
-	}
-	send_options_exclusive = no
-
-	on_accept = {
-		scope:recipient = {
-			if = {
-				limit = { NOT = { scope:actor.culture = scope:recipient.culture	 } }
-				set_culture = scope:actor.culture
-			}
-			if = {
-				limit = { is_landed = yes }
-				capital_province.county = {
-					set_county_culture = scope:actor.culture
-				}
-			}
-			if = {
-				limit = { scope:vassal = yes }
-				every_courtier = {
-					limit = { is_close_family_of = prev }
-					set_culture = scope:actor.culture
-				}
-				every_vassal = {
-					limit = { primary_title.tier >= tier_county }
-					set_culture = scope:actor.culture
-					if = {
-						limit = { is_landed = yes }
-						capital_province.county = {
-							set_county_culture = scope:actor.culture
-						}
-					}
-					every_courtier = {
-						limit = { is_close_family_of = prev }
-						set_culture = scope:actor.culture
-					}
-				}
-			}
 		}
 	}
 }
@@ -229,9 +66,39 @@ bci_switch_character = {
 	}
 }
 
+bci_sex = {
+	icon = carn_sex_interaction
+	common_interaction = yes
+	auto_accept = yes
+	use_diplomatic_range = no
+	ignores_pending_interaction_block = yes
+
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+		}
+	}
+
+	on_send = {
+		if = {
+			limit = {
+				scope:actor = { is_adult = yes }
+				scope:recipient = { is_adult = yes }
+				NOT = { scope:actor = scope:recipient }
+			}
+			save_scope_value_as = {
+				name = ignore_cheating_error_check
+				value = yes
+			}
+			scope:actor = {
+				had_sex_with_effect = { CHARACTER = scope:recipient PREGNANCY_CHANCE = 100 }
+			}
+		}
+	}
+}
+
 bci_kill = {
 	icon = icon_dead
-	common_interaction = no
 	auto_accept = yes
 	use_diplomatic_range = no
 	ignores_pending_interaction_block = yes
@@ -247,62 +114,6 @@ bci_kill = {
 			death = natural
 		}
 	}
-}
-
-bci_child = {
-	icon = pregnant
-	use_diplomatic_range = no
-	is_shown = {
-		scope:actor = {
-			is_ai = no
-		}
-		scope:recipient = {
-			is_adult = yes
-			age >= 18
-		}
-	}
-	on_accept = {
-		scope:recipient = {
-			if = {
-				limit = { exists = capital_province }
-				save_scope_as = child_location
-			}
-			else_if = {
-				limit = { exists = liege }
-				liege.capital_province = { save_scope_as = child_location }
-			}
-			else = {
-				scope:actor.capital_province = { save_scope_as = child_location }
-			}
-			if = {
-				limit = { is_female = yes }
-				save_scope_as = mother
-				if = {
-					limit = { exists = primary_spouse }
-					primary_spouse = { save_scope_as = father }
-				}
-			}
-			else = {
-				save_scope_as = father
-				if = {
-					limit = { exists = primary_spouse }
-					primary_spouse = { save_scope_as = mother }
-				}
-			}
-			create_character = {
-				age = 0
-				location = scope:child_location
-				mother = scope:mother
-				father = scope:father
-				dynasty_house = house
-				culture = culture
-				faith = faith
-				gender_female_chance = 50
-				save_scope_as = child
-			}
-		}
-	}
-	auto_accept = yes
 }
 
 bci_add_character = {
@@ -357,8 +168,64 @@ bci_imprison = {
 	}
 }
 
+bci_puppet = {
+	icon = external_ruler_puppet
+	common_interaction = yes
+	auto_accept = yes
+	use_diplomatic_range = no
+	ignores_pending_interaction_block = yes
+
+	is_shown = {
+		scope:recipient != scope:actor
+		scope:actor = {
+			is_ai = no
+			can_have_external_ruler_puppet_trigger = yes
+		}
+	}
+
+	on_accept = {
+		scope:recipient = {
+			if = {
+				limit = { exists = puppeteer }
+				clear_puppet_status = yes
+			}
+		}
+		scope:actor = {
+			set_puppet = {
+				target = scope:recipient
+				type = external_ruler_puppet
+			}
+		}
+	}
+}
+
+bci_create_hook = {
+	icon = fabricate_hook_interaction
+	common_interaction = yes
+	auto_accept = yes
+	use_diplomatic_range = no
+	ignores_pending_interaction_block = yes
+
+	is_shown = {
+		scope:recipient != scope:actor
+		scope:actor = {
+			is_ai = no
+		}
+	}
+
+	on_accept = {
+		scope:actor = {
+			add_hook = {
+				target = scope:recipient
+				type = fabrication_hook
+			}
+		}
+	}
+}
+
 bci_vassal_inter = {
 	icon = icon_vassal
+	common_interaction = yes
 	auto_accept = yes
 	use_diplomatic_range = no
 	ignores_pending_interaction_block = yes
@@ -380,6 +247,62 @@ bci_vassal_inter = {
 			offer_vassalization_interaction_effect = yes
 		}
 	}
+}
+
+bci_child = {
+	icon = pregnant
+	use_diplomatic_range = no
+	is_shown = {
+		scope:actor = {
+			is_ai = no
+		}
+		scope:recipient = {
+			is_adult = yes
+			age >= 18
+		}
+	}
+	on_accept = {
+		scope:recipient = {
+			if = {
+				limit = { exists = capital_province }
+				capital_province = { save_scope_as = child_location }
+			}
+			else_if = {
+				limit = { exists = liege }
+				liege.capital_province = { save_scope_as = child_location }
+			}
+			else = {
+				scope:actor.capital_province = { save_scope_as = child_location }
+			}
+			if = {
+				limit = { is_female = yes }
+				save_scope_as = mother
+				if = {
+					limit = { exists = primary_spouse }
+					primary_spouse = { save_scope_as = father }
+				}
+			}
+			else = {
+				save_scope_as = father
+				if = {
+					limit = { exists = primary_spouse }
+					primary_spouse = { save_scope_as = mother }
+				}
+			}
+			create_character = {
+				age = 0
+				location = scope:child_location
+				mother = scope:mother
+				father = scope:father
+				dynasty_house = house
+				culture = culture
+				faith = faith
+				gender_female_chance = 50
+				save_scope_as = child
+			}
+		}
+	}
+	auto_accept = yes
 }
 
 bci_revoke_character = {
@@ -405,258 +328,6 @@ bci_revoke_character = {
 	can_be_picked_title = {
 		scope:target = {
 			holder = scope:recipient
-		}
-	}
-}
-
-bci_relation = {
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-	icon = propose_best_friendship_interaction
-	is_shown = {
-		scope:recipient != scope:actor
-	}
-
-	send_option = {
-		flag = friend
-		localization = set_relation_debug_friend
-	}
-	send_option = {
-		flag = best_friend
-		localization = set_relation_debug_best_friend
-	}
-	send_option = {
-		flag = rival
-		localization = set_relation_debug_rival
-	}
-	send_option = {
-		flag = nemesis
-		localization = set_relation_debug_nemesis
-	}
-	send_option = {
-		is_shown = {
-			scope:actor = { is_adult = yes }
-			scope:recipient = { is_adult = yes }
-		}
-		flag = lover
-		localization = set_relation_debug_lover
-	}
-	send_option = {
-		is_shown = {
-			scope:actor = { is_adult = yes }
-			scope:recipient = { is_adult = yes }
-		}
-		flag = soulmate
-		localization = set_relation_debug_soulmate
-	}
-	send_option = {
-		is_shown = {
-			scope:actor = { is_adult = no }
-			scope:recipient = { is_adult = no }
-		}
-		flag = bully
-		localization = set_relation_debug_bully
-	}
-	send_option = {
-		is_shown = {
-			scope:actor = { is_adult = no }
-			scope:recipient = { is_adult = no }
-		}
-		flag = victim
-		localization = set_relation_debug_victim
-	}
-	send_option = {
-		is_shown = {
-			scope:actor = { is_adult = no }
-			scope:recipient = { is_adult = no }
-		}
-		flag = crush
-		localization = set_relation_debug_crush
-	}
-	send_option = {
-		is_shown = {
-			scope:actor = { is_adult = no }
-			scope:recipient = { is_adult = no }
-		}
-		flag = grudge
-		localization = set_relation_debug_grudge
-	}
-
-	on_accept = {
-		scope:recipient = {
-			switch = {
-				trigger = yes
-				# SET
-				scope:friend = { 
-					if = {
-						limit = { has_relation_friend = scope:actor }
-						remove_relation_friend = scope:actor
-					}
-					else = {
-						set_relation_friend = scope:actor
-					}
-				}
-				scope:best_friend = { 
-					if = {
-						limit = { has_relation_best_friend = scope:actor }
-						remove_relation_best_friend = scope:actor
-					}
-					else = {
-						set_relation_best_friend = scope:actor
-					}
-				}
-				scope:rival = { 
-					if = {
-						limit = { has_relation_rival = scope:actor }
-						remove_relation_rival = scope:actor
-					}
-					else = {
-						set_relation_rival = scope:actor
-					}
-				}
-				scope:nemesis = { 
-					if = {
-						limit = { has_relation_nemesis = scope:actor }
-						remove_relation_nemesis = scope:actor
-					}
-					else = {
-						set_relation_nemesis = scope:actor
-					}
-				}
-				scope:lover = { 
-					if = {
-						limit = { has_relation_lover = scope:actor }
-						remove_relation_lover = scope:actor
-					}
-					else = {
-						set_relation_lover = scope:actor
-					}
-				}
-				scope:soulmate = { 
-					if = {
-						limit = { has_relation_soulmate = scope:actor }
-						remove_relation_soulmate = scope:actor
-					}
-					else = {
-						set_relation_soulmate = scope:actor
-					}
-				}
-				scope:bully = { 
-					if = {
-						limit = { has_relation_bully = scope:actor }
-						remove_relation_bully = scope:actor
-					}
-					else = {
-						set_relation_bully = scope:actor
-					}
-				}
-				scope:victim = { 
-					if = {
-						limit = { has_relation_victim = scope:actor }
-						remove_relation_victim = scope:actor
-					}
-					else = {
-						set_relation_victim = scope:actor
-					}
-				}
-				scope:crush = { 
-					if = {
-						limit = { has_relation_crush = scope:actor }
-						remove_relation_crush = scope:actor
-					}
-					else = {
-						set_relation_crush = scope:actor
-					}
-				}
-				scope:grudge = { 
-					if = {
-						limit = { has_relation_grudge = scope:actor }
-						remove_relation_grudge = scope:actor
-					}
-					else = {
-						set_relation_grudge = scope:actor
-					}
-				}
-			}
-		}
-	}
-	auto_accept = yes
-}
-
-bci_create_hook = {
-	icon = fabricate_hook_interaction
-	auto_accept = yes
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-
-	is_shown = {
-		scope:recipient != scope:actor
-		scope:actor = {
-			is_ai = no
-		}
-	}
-
-	on_accept = {
-		scope:actor = {
-			add_hook = {
-				target = scope:recipient
-				type = fabrication_hook
-			}
-		}
-	}
-}
-
-bci_secret = {
-	icon = secret
-	auto_accept = yes
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-	is_shown = {
-		scope:actor = { is_ai = no }
-	}
-	send_option = {
-		is_valid = {
-			scope:recipient = {
-				NOT = { any_secret = { secret_type = secret_witch } }
-			}
-		}
-		flag = witch
-		localization = secret_witch
-	}
-	send_option = {
-		is_valid = {
-			scope:recipient = {
-				NOT = { any_secret = { secret_type = secret_deviant } }
-			}
-		}
-		flag = deviant
-		localization = secret_deviant
-	}
-	send_option = {
-		is_valid = {
-			scope:recipient = {
-				NOT = { any_secret = { secret_type = secret_cannibal } }
-			}
-		}
-		flag = cannibal
-		localization = secret_cannibal
-	}
-	send_options_exclusive = yes
-
-	on_accept = {
-		scope:recipient = {
-			if = {
-				limit = { scope:deviant = yes }
-				add_secret = { type = secret_deviant }
-			}
-			else_if = {
-				limit = { scope:witch = yes }
-				add_secret = { type = secret_witch }
-			}
-			else_if = {
-				limit = { scope:cannibal = yes }
-				add_secret = { type = secret_cannibal }
-			}
 		}
 	}
 }
@@ -700,983 +371,1540 @@ bci_stop_nude = {
 
 bci_heal = {
 	icon = bci_heal
-	auto_accept = yes
 	use_diplomatic_range = no
 	ignores_pending_interaction_block = yes
+	send_options_exclusive = no
+
 	is_shown = {
 		scope:actor = { is_ai = no }
 		scope:recipient = {
-			bci_has_bad_trait_trigger = yes
+			OR = {
+				has_trait = drunkard
+				has_trait = hashishiyah
+				has_trait = rakish
+				has_trait = reclusive
+				has_trait = irritable
+				has_trait = flagellant
+				has_trait = profligate
+				has_trait = improvident
+				has_trait = contrite
+				has_trait = comfort_eater
+				has_trait = inappetetic
+				has_trait = depressed_1
+				has_trait = depressed_genetic
+				has_trait = lunatic_1
+				has_trait = lunatic_genetic
+				has_trait = possessed_1
+				has_trait = possessed_genetic
+				has_trait = one_eyed
+				has_trait = scarred
+				has_trait = maimed
+				has_trait = one_legged
+				has_trait = disfigured
+				has_trait = eunuch
+				has_trait = eunuch_1
+				has_trait = blind
+				has_trait = sickly
+				has_trait = infirm
+				has_trait = incapable
+				has_trait = leper
+				has_trait = wounded_1
+				has_trait = wounded_2
+				has_trait = wounded_3
+				has_trait = ill
+				has_trait = pneumonic
+				has_trait = gout_ridden
+				has_trait = typhus
+				has_trait = consumption
+				has_trait = measles
+				has_trait = cancer
+				has_trait = great_pox
+				has_trait = smallpox
+				has_trait = bubonic_plague
+				has_trait = lovers_pox
+				has_trait = early_great_pox
+				has_trait = dysentery
+				has_trait = ergotism
+				has_trait = albino
+				has_trait = lisping
+				has_trait = stuttering
+				has_trait = giant
+				has_trait = scaly
+				has_trait = clubfooted
+				has_trait = dwarf
+				has_trait = hunchbacked
+				has_trait = infertile
+				has_trait = wheezing
+				has_trait = spindly
+				has_trait = bleeder
+				has_trait = weak
+				has_trait = dull
+				has_trait = beauty_bad_1
+				has_trait = beauty_bad_2
+				has_trait = beauty_bad_3
+				has_trait = intellect_bad_1
+				has_trait = intellect_bad_2
+				has_trait = intellect_bad_3
+				has_trait = physique_bad_1
+				has_trait = physique_bad_2
+				has_trait = physique_bad_3
+				has_trait = inbred
+				has_trait = adulterer
+				has_trait = fornicator
+				has_trait = incestuous
+				has_trait = sodomite
+				has_trait = deviant
+				has_trait = cannibal
+				has_trait = witch
+				has_trait = excommunicated
+				has_trait = murderer
+				has_trait = kinslayer_1
+				has_trait = kinslayer_2
+				has_trait = kinslayer_3
+				has_trait = beardless_eunuch
+				has_character_modifier = rejected_from_marriage_bed_modifier
+				has_character_modifier = sbs_seal
+				has_character_modifier = sbs_debuff
+				has_character_modifier = stanky_modifier
+				has_character_modifier = confused_modifier
+				has_character_modifier = stress_smelling_of_sweat
+				has_character_modifier = party_baron_murdered_the_joy_of_life_modifier
+				has_character_modifier = totally_lost_modifier
+				has_character_modifier = bad_omen_modifier
+				has_character_modifier = lost_in_lust_modifier
+				has_character_modifier = intrigue_starved_and_deprived_modifier
+			}
 		}
 	}
-	on_accept = {
-		scope:recipient = {
-			bci_healing_effect = yes
+
+	can_send = {
+		OR = {
+			scope:drunkard = yes
+			scope:hashishiyah = yes
+			scope:rakish = yes
+			scope:reclusive = yes
+			scope:irritable = yes
+			scope:flagellant = yes
+			scope:profligate = yes
+			scope:improvident = yes
+			scope:contrite = yes
+			scope:comfort_eater = yes
+			scope:inappetetic = yes
+			scope:depressed_1 = yes
+			scope:depressed_genetic = yes
+			scope:lunatic_1 = yes
+			scope:lunatic_genetic = yes
+			scope:possessed_1 = yes
+			scope:possessed_genetic = yes
+			scope:one_eyed = yes
+			scope:scarred = yes
+			scope:maimed = yes
+			scope:one_legged = yes
+			scope:disfigured = yes
+			scope:eunuch = yes
+			scope:eunuch_1 = yes
+			scope:blind = yes
+			scope:sickly = yes
+			scope:infirm = yes
+			scope:incapable = yes
+			scope:leper = yes
+			scope:wounded_1 = yes
+			scope:wounded_2 = yes
+			scope:wounded_3 = yes
+			scope:ill = yes
+			scope:pneumonic = yes
+			scope:gout_ridden = yes
+			scope:typhus = yes
+			scope:consumption = yes
+			scope:measles = yes
+			scope:cancer = yes
+			scope:great_pox = yes
+			scope:smallpox = yes
+			scope:bubonic_plague = yes
+			scope:lovers_pox = yes
+			scope:early_great_pox = yes
+			scope:dysentery = yes
+			scope:ergotism = yes
+			scope:albino = yes
+			scope:lisping = yes
+			scope:stuttering = yes
+			scope:giant = yes
+			scope:scaly = yes
+			scope:clubfooted = yes
+			scope:dwarf = yes
+			scope:hunchbacked = yes
+			scope:infertile = yes
+			scope:wheezing = yes
+			scope:spindly = yes
+			scope:bleeder = yes
+			scope:weak = yes
+			scope:dull = yes
+			scope:beauty_bad_1 = yes
+			scope:beauty_bad_2 = yes
+			scope:beauty_bad_3 = yes
+			scope:intellect_bad_1 = yes
+			scope:intellect_bad_2 = yes
+			scope:intellect_bad_3 = yes
+			scope:physique_bad_1 = yes
+			scope:physique_bad_2 = yes
+			scope:physique_bad_3 = yes
+			scope:inbred = yes
+			scope:adulterer = yes
+			scope:fornicator = yes
+			scope:incestuous = yes
+			scope:sodomite = yes
+			scope:deviant = yes
+			scope:cannibal = yes
+			scope:witch = yes
+			scope:excommunicated = yes
+			scope:murderer = yes
+			scope:kinslayer_1 = yes
+			scope:kinslayer_2 = yes
+			scope:kinslayer_3 = yes
+			scope:beardless_eunuch = yes
+			scope:rejected_from_marriage_bed_modifier = yes
+			scope:sbs_seal = yes
+			scope:sbs_debuff = yes
+			scope:stanky_modifier = yes
+			scope:confused_modifier = yes
+			scope:stress_smelling_of_sweat = yes
+			scope:party_baron_murdered_the_joy_of_life_modifier = yes
+			scope:totally_lost_modifier = yes
+			scope:bad_omen_modifier = yes
+			scope:lost_in_lust_modifier = yes
+			scope:intrigue_starved_and_deprived_modifier = yes
 		}
 	}
-}
 
-bci_perk_points = {
-	icon = forgiving
-	auto_accept = yes
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-	common_interaction = yes
-
-	is_shown = {
-		scope:actor = { is_ai = no }
-	}
 	send_option = {
-		flag = education_intrigue
-		localization = trait_education_intrigue
-	}
-	send_option = {
-		flag = education_diplomacy
-		localization = trait_education_diplomacy
-	}
-	send_option = {
-		flag = education_stewardship
-		localization = trait_education_stewardship
-	}
-	send_option = {
-		flag = education_martial
-		localization = trait_education_martial
-	}
-	send_option = {
-		flag = education_learning
-		localization = trait_education_learning
-	}
-	send_options_exclusive = yes
-	on_accept = {
-		scope:recipient = {
-			if = {
-				limit = { scope:education_intrigue = yes }
-				add_intrigue_lifestyle_perk_points = 1
-			}
-			else_if = {
-				limit = { scope:education_diplomacy = yes }
-				add_diplomacy_lifestyle_perk_points = 1
-			}
-			else_if = {
-				limit = { scope:education_stewardship = yes }
-				add_stewardship_lifestyle_perk_points = 1
-			}
-			else_if = {
-				limit = { scope:education_martial = yes }
-				add_martial_lifestyle_perk_points = 1
-			}
-			else_if = {
-				limit = { scope:education_learning = yes }
-				add_learning_lifestyle_perk_points = 1
+		flag = drunkard
+		localization = trait_drunkard
+		is_shown = {
+			scope:recipient = {
+				has_trait = drunkard
 			}
 		}
-	}
-}
-
-bci_trait = {
-	icon = wrathful
-	auto_accept = yes
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-	common_interaction = yes
-
-	is_shown = {
-		scope:actor = { is_ai = no }
-	}
-
-	send_option = {
-		flag = lustful
-		localization = trait_lustful
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = chaste
-		localization = trait_chaste
+		flag = hashishiyah
+		localization = trait_hashishiyah
+		is_shown = {
+			scope:recipient = {
+				has_trait = hashishiyah
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = gluttonous
-		localization = trait_gluttonous
+		flag = rakish
+		localization = trait_rakish
+		is_shown = {
+			scope:recipient = {
+				has_trait = rakish
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = temperate
-		localization = trait_temperate
+		flag = reclusive
+		localization = trait_reclusive
+		is_shown = {
+			scope:recipient = {
+				has_trait = reclusive
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = greedy
-		localization = trait_greedy
+		flag = irritable
+		localization = trait_irritable
+		is_shown = {
+			scope:recipient = {
+				has_trait = irritable
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = generous
-		localization = trait_generous
+		flag = flagellant
+		localization = trait_flagellant
+		is_shown = {
+			scope:recipient = {
+				has_trait = flagellant
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = lazy
-		localization = trait_lazy
+		flag = profligate
+		localization = trait_profligate
+		is_shown = {
+			scope:recipient = {
+				has_trait = profligate
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = diligent
-		localization = trait_diligent
+		flag = improvident
+		localization = trait_improvident
+		is_shown = {
+			scope:recipient = {
+				has_trait = improvident
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = wrathful
-		localization = trait_wrathful
+		flag = contrite
+		localization = trait_contrite
+		is_shown = {
+			scope:recipient = {
+				has_trait = contrite
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = calm
-		localization = trait_calm
+		flag = comfort_eater
+		localization = trait_comfort_eater
+		is_shown = {
+			scope:recipient = {
+				has_trait = comfort_eater
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = patient
-		localization = trait_patient
+		flag = inappetetic
+		localization = trait_inappetetic
+		is_shown = {
+			scope:recipient = {
+				has_trait = inappetetic
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = impatient
-		localization = trait_impatient
+		flag = depressed_1
+		localization = trait_depressed_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = depressed_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = arrogant
-		localization = trait_arrogant
+		flag = depressed_genetic
+		localization = trait_depressed_genetic
+		is_shown = {
+			scope:recipient = {
+				has_trait = depressed_genetic
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = humble
-		localization = trait_humble
+		flag = lunatic_1
+		localization = trait_lunatic_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = lunatic_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = deceitful
-		localization = trait_deceitful
+		flag = lunatic_genetic
+		localization = trait_lunatic_genetic
+		is_shown = {
+			scope:recipient = {
+				has_trait = lunatic_genetic
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = honest
-		localization = trait_honest
+		flag = possessed_1
+		localization = trait_possessed_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = possessed_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = craven
-		localization = trait_craven
+		flag = possessed_genetic
+		localization = trait_possessed_genetic
+		is_shown = {
+			scope:recipient = {
+				has_trait = possessed_genetic
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = brave
-		localization = trait_brave
+		flag = one_eyed
+		localization = trait_one_eyed
+		is_shown = {
+			scope:recipient = {
+				has_trait = one_eyed
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = shy
-		localization = trait_shy
+		flag = scarred
+		localization = trait_scarred
+		is_shown = {
+			scope:recipient = {
+				has_trait = scarred
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = gregarious
-		localization = trait_gregarious
+		flag = maimed
+		localization = trait_maimed
+		is_shown = {
+			scope:recipient = {
+				has_trait = maimed
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = ambitious
-		localization = trait_ambitious
+		flag = one_legged
+		localization = trait_one_legged
+		is_shown = {
+			scope:recipient = {
+				has_trait = one_legged
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = content
-		localization = trait_content
+		flag = disfigured
+		localization = trait_disfigured
+		is_shown = {
+			scope:recipient = {
+				has_trait = disfigured
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = arbitrary
-		localization = trait_arbitrary
+		flag = eunuch
+		localization = trait_eunuch
+		is_shown = {
+			scope:recipient = {
+				has_trait = eunuch
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = just
-		localization = trait_just
+		flag = eunuch_1
+		localization = trait_eunuch_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = eunuch_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = cynical
-		localization = trait_cynical
+		flag = blind
+		localization = trait_blind
+		is_shown = {
+			scope:recipient = {
+				has_trait = blind
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = zealous
-		localization = trait_zealous
+		flag = sickly
+		localization = trait_sickly
+		is_shown = {
+			scope:recipient = {
+				has_trait = sickly
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = paranoid
-		localization = trait_paranoid
+		flag = infirm
+		localization = trait_infirm
+		is_shown = {
+			scope:recipient = {
+				has_trait = infirm
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = trusting
-		localization = trait_trusting
+		flag = incapable
+		localization = trait_incapable
+		is_shown = {
+			scope:recipient = {
+				has_trait = incapable
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = compassionate
-		localization = trait_compassionate
+		flag = leper
+		localization = trait_leper
+		is_shown = {
+			scope:recipient = {
+				has_trait = leper
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = callous
-		localization = trait_callous
+		flag = wounded_1
+		localization = trait_wounded_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = wounded_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = sadistic
-		localization = trait_sadistic
+		flag = wounded_2
+		localization = trait_wounded_2
+		is_shown = {
+			scope:recipient = {
+				has_trait = wounded_2
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = stubborn
-		localization = trait_stubborn
+		flag = wounded_3
+		localization = trait_wounded_3
+		is_shown = {
+			scope:recipient = {
+				has_trait = wounded_3
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = fickle
-		localization = trait_fickle
+		flag = ill
+		localization = trait_ill
+		is_shown = {
+			scope:recipient = {
+				has_trait = ill
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = eccentric
-		localization = trait_eccentric
+		flag = pneumonic
+		localization = trait_pneumonic
+		is_shown = {
+			scope:recipient = {
+				has_trait = pneumonic
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = vengeful
-		localization = trait_vengeful
+		flag = gout_ridden
+		localization = trait_gout_ridden
+		is_shown = {
+			scope:recipient = {
+				has_trait = gout_ridden
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = forgiving
-		localization = trait_forgiving
+		flag = typhus
+		localization = trait_typhus
+		is_shown = {
+			scope:recipient = {
+				has_trait = typhus
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = devoted
-		localization = trait_devoted
+		flag = consumption
+		localization = trait_consumption
+		is_shown = {
+			scope:recipient = {
+				has_trait = consumption
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = measles
+		localization = trait_measles
+		is_shown = {
+			scope:recipient = {
+				has_trait = measles
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = cancer
+		localization = trait_cancer
+		is_shown = {
+			scope:recipient = {
+				has_trait = cancer
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = great_pox
+		localization = trait_great_pox
+		is_shown = {
+			scope:recipient = {
+				has_trait = great_pox
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = smallpox
+		localization = trait_smallpox
+		is_shown = {
+			scope:recipient = {
+				has_trait = smallpox
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = bubonic_plague
+		localization = trait_bubonic_plague
+		is_shown = {
+			scope:recipient = {
+				has_trait = bubonic_plague
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = lovers_pox
+		localization = trait_lovers_pox
+		is_shown = {
+			scope:recipient = {
+				has_trait = lovers_pox
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = early_great_pox
+		localization = trait_early_great_pox
+		is_shown = {
+			scope:recipient = {
+				has_trait = early_great_pox
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = dysentery
+		localization = trait_dysentery
+		is_shown = {
+			scope:recipient = {
+				has_trait = dysentery
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = ergotism
+		localization = trait_ergotism
+		is_shown = {
+			scope:recipient = {
+				has_trait = ergotism
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = albino
+		localization = trait_albino
+		is_shown = {
+			scope:recipient = {
+				has_trait = albino
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = lisping
+		localization = trait_lisping
+		is_shown = {
+			scope:recipient = {
+				has_trait = lisping
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = stuttering
+		localization = trait_stuttering
+		is_shown = {
+			scope:recipient = {
+				has_trait = stuttering
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = giant
+		localization = trait_giant
+		is_shown = {
+			scope:recipient = {
+				has_trait = giant
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = scaly
+		localization = trait_scaly
+		is_shown = {
+			scope:recipient = {
+				has_trait = scaly
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = clubfooted
+		localization = trait_clubfooted
+		is_shown = {
+			scope:recipient = {
+				has_trait = clubfooted
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = dwarf
+		localization = trait_dwarf
+		is_shown = {
+			scope:recipient = {
+				has_trait = dwarf
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = hunchbacked
+		localization = trait_hunchbacked
+		is_shown = {
+			scope:recipient = {
+				has_trait = hunchbacked
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = infertile
+		localization = trait_infertile
+		is_shown = {
+			scope:recipient = {
+				has_trait = infertile
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = wheezing
+		localization = trait_wheezing
+		is_shown = {
+			scope:recipient = {
+				has_trait = wheezing
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = spindly
+		localization = trait_spindly
+		is_shown = {
+			scope:recipient = {
+				has_trait = spindly
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = bleeder
+		localization = trait_bleeder
+		is_shown = {
+			scope:recipient = {
+				has_trait = bleeder
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = weak
+		localization = trait_weak
+		is_shown = {
+			scope:recipient = {
+				has_trait = weak
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = dull
+		localization = trait_dull
+		is_shown = {
+			scope:recipient = {
+				has_trait = dull
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = beauty_bad_1
+		localization = trait_beauty_bad_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = beauty_bad_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = beauty_bad_2
+		localization = trait_beauty_bad_2
+		is_shown = {
+			scope:recipient = {
+				has_trait = beauty_bad_2
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = beauty_bad_3
+		localization = trait_beauty_bad_3
+		is_shown = {
+			scope:recipient = {
+				has_trait = beauty_bad_3
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = intellect_bad_1
+		localization = trait_intellect_bad_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = intellect_bad_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = intellect_bad_2
+		localization = trait_intellect_bad_2
+		is_shown = {
+			scope:recipient = {
+				has_trait = intellect_bad_2
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = intellect_bad_3
+		localization = trait_intellect_bad_3
+		is_shown = {
+			scope:recipient = {
+				has_trait = intellect_bad_3
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = physique_bad_1
+		localization = trait_physique_bad_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = physique_bad_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = physique_bad_2
+		localization = trait_physique_bad_2
+		is_shown = {
+			scope:recipient = {
+				has_trait = physique_bad_2
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = physique_bad_3
+		localization = trait_physique_bad_3
+		is_shown = {
+			scope:recipient = {
+				has_trait = physique_bad_3
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = inbred
+		localization = trait_inbred
+		is_shown = {
+			scope:recipient = {
+				has_trait = inbred
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = adulterer
+		localization = trait_adulterer
+		is_shown = {
+			scope:recipient = {
+				has_trait = adulterer
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = fornicator
+		localization = trait_fornicator
+		is_shown = {
+			scope:recipient = {
+				has_trait = fornicator
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = incestuous
+		localization = trait_incestuous
+		is_shown = {
+			scope:recipient = {
+				has_trait = incestuous
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = sodomite
+		localization = trait_sodomite
+		is_shown = {
+			scope:recipient = {
+				has_trait = sodomite
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
 		flag = deviant
 		localization = trait_deviant
+		is_shown = {
+			scope:recipient = {
+				has_trait = deviant
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
 		flag = cannibal
 		localization = trait_cannibal
+		is_shown = {
+			scope:recipient = {
+				has_trait = cannibal
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
 		flag = witch
 		localization = trait_witch
-	}
-	send_option = {
-		flag = disinherited
-		localization = trait_disinherited
-	}
-	send_option = {
-		flag = denounced
-		localization = trait_denounced
-	}
-	send_option = {
-		flag = education_intrigue
-		localization = trait_education_intrigue
-	}
-	send_option = {
-		flag = education_diplomacy
-		localization = trait_education_diplomacy
-	}
-	send_option = {
-		flag = education_stewardship
-		localization = trait_education_stewardship
-	}
-	send_option = {
-		flag = education_martial
-		localization = trait_education_martial
-	}
-	send_option = {
-		flag = education_learning
-		localization = trait_education_learning
-	}
-	send_option = {
-		flag = physique_good
-		localization = trait_physique_good
-	}
-	send_option = {
-		flag = intellect_good
-		localization = trait_intellect_good
-	}
-	send_option = {
-		flag = beauty_good
-		localization = trait_beauty_good
-	}
-	send_option = {
-		flag = governor
-		localization = trait_governor
-	}
-	send_option = {
-		flag = lifestyle_blademaster
-		localization = trait_lifestyle_blademaster
-	}
-	send_option = {
-		flag = lifestyle_reveler
-		localization = trait_lifestyle_reveler
-	}
-	send_option = {
-		flag = lifestyle_hunter
-		localization = trait_lifestyle_hunter
-	}
-
-	on_accept = {
-		scope:recipient = {
-			if = {
-				limit = { scope:lustful = yes }
-				if = {
-					limit = { has_trait = lustful }
-					remove_trait = lustful
-				}
-				else = { add_trait = lustful }
-			}
-			else_if = {
-				limit = { scope:chaste = yes }
-				if = {
-					limit = { has_trait = chaste }
-					remove_trait = chaste
-				}
-				else = { add_trait = chaste }
-			}
-			else_if = {
-				limit = { scope:gluttonous = yes }
-				if = {
-					limit = { has_trait = gluttonous }
-					remove_trait = gluttonous
-				}
-				else = { add_trait = gluttonous }
-			}
-			else_if = {
-				limit = { scope:temperate = yes }
-				if = {
-					limit = { has_trait = temperate }
-					remove_trait = temperate
-				}
-				else = { add_trait = temperate }
-			}
-			else_if = {
-				limit = { scope:greedy = yes }
-				if = {
-					limit = { has_trait = greedy }
-					remove_trait = greedy
-				}
-				else = { add_trait = greedy }
-			}
-			else_if = {
-				limit = { scope:generous = yes }
-				if = {
-					limit = { has_trait = generous }
-					remove_trait = generous
-				}
-				else = { add_trait = generous }
-			}
-			else_if = {
-				limit = { scope:lazy = yes }
-				if = {
-					limit = { has_trait = lazy }
-					remove_trait = lazy
-				}
-				else = { add_trait = lazy }
-			}
-			else_if = {
-				limit = { scope:diligent = yes }
-				if = {
-					limit = { has_trait = diligent }
-					remove_trait = diligent
-				}
-				else = { add_trait = diligent }
-			}
-			else_if = {
-				limit = { scope:wrathful = yes }
-				if = {
-					limit = { has_trait = wrathful }
-					remove_trait = wrathful
-				}
-				else = { add_trait = wrathful }
-			}
-			else_if = {
-				limit = { scope:calm = yes }
-				if = {
-					limit = { has_trait = calm }
-					remove_trait = calm
-				}
-				else = { add_trait = calm }
-			}
-			else_if = {
-				limit = { scope:patient = yes }
-				if = {
-					limit = { has_trait = patient }
-					remove_trait = patient
-				}
-				else = { add_trait = patient }
-			}
-			else_if = {
-				limit = { scope:impatient = yes }
-				if = {
-					limit = { has_trait = impatient }
-					remove_trait = impatient
-				}
-				else = { add_trait = impatient }
-			}
-			else_if = {
-				limit = { scope:arrogant = yes }
-				if = {
-					limit = { has_trait = arrogant }
-					remove_trait = arrogant
-				}
-				else = { add_trait = arrogant }
-			}
-			else_if = {
-				limit = { scope:humble = yes }
-				if = {
-					limit = { has_trait = humble }
-					remove_trait = humble
-				}
-				else = { add_trait = humble }
-			}
-			else_if = {
-				limit = { scope:deceitful = yes }
-				if = {
-					limit = { has_trait = deceitful }
-					remove_trait = deceitful
-				}
-				else = { add_trait = deceitful }
-			}
-			else_if = {
-				limit = { scope:honest = yes }
-				if = {
-					limit = { has_trait = honest }
-					remove_trait = honest
-				}
-				else = { add_trait = honest }
-			}
-			else_if = {
-				limit = { scope:craven = yes }
-				if = {
-					limit = { has_trait = craven }
-					remove_trait = craven
-				}
-				else = { add_trait = craven }
-			}
-			else_if = {
-				limit = { scope:brave = yes }
-				if = {
-					limit = { has_trait = brave }
-					remove_trait = brave
-				}
-				else = { add_trait = brave }
-			}
-			else_if = {
-				limit = { scope:shy = yes }
-				if = {
-					limit = { has_trait = shy }
-					remove_trait = shy
-				}
-				else = { add_trait = shy }
-			}
-			else_if = {
-				limit = { scope:gregarious = yes }
-				if = {
-					limit = { has_trait = gregarious }
-					remove_trait = gregarious
-				}
-				else = { add_trait = gregarious }
-			}
-			else_if = {
-				limit = { scope:ambitious = yes }
-				if = {
-					limit = { has_trait = ambitious }
-					remove_trait = ambitious
-				}
-				else = { add_trait = ambitious }
-			}
-			else_if = {
-				limit = { scope:content = yes }
-				if = {
-					limit = { has_trait = content }
-					remove_trait = content
-				}
-				else = { add_trait = content }
-			}
-			else_if = {
-				limit = { scope:arbitrary = yes }
-				if = {
-					limit = { has_trait = arbitrary }
-					remove_trait = arbitrary
-				}
-				else = { add_trait = arbitrary }
-			}
-			else_if = {
-				limit = { scope:just = yes }
-				if = {
-					limit = { has_trait = just }
-					remove_trait = just
-				}
-				else = { add_trait = just }
-			}
-			else_if = {
-				limit = { scope:cynical = yes }
-				if = {
-					limit = { has_trait = cynical }
-					remove_trait = cynical
-				}
-				else = { add_trait = cynical }
-			}
-			else_if = {
-				limit = { scope:zealous = yes }
-				if = {
-					limit = { has_trait = zealous }
-					remove_trait = zealous
-				}
-				else = { add_trait = zealous }
-			}
-			else_if = {
-				limit = { scope:paranoid = yes }
-				if = {
-					limit = { has_trait = paranoid }
-					remove_trait = paranoid
-				}
-				else = { add_trait = paranoid }
-			}
-			else_if = {
-				limit = { scope:trusting = yes }
-				if = {
-					limit = { has_trait = trusting }
-					remove_trait = trusting
-				}
-				else = { add_trait = trusting }
-			}
-			else_if = {
-				limit = { scope:compassionate = yes }
-				if = {
-					limit = { has_trait = compassionate }
-					remove_trait = compassionate
-				}
-				else = { add_trait = compassionate }
-			}
-			else_if = {
-				limit = { scope:callous = yes }
-				if = {
-					limit = { has_trait = callous }
-					remove_trait = callous
-				}
-				else = { add_trait = callous }
-			}
-			else_if = {
-				limit = { scope:sadistic = yes }
-				if = {
-					limit = { has_trait = sadistic }
-					remove_trait = sadistic
-				}
-				else = { add_trait = sadistic }
-			}
-			else_if = {
-				limit = { scope:stubborn = yes }
-				if = {
-					limit = { has_trait = stubborn }
-					remove_trait = stubborn
-				}
-				else = { add_trait = stubborn }
-			}
-			else_if = {
-				limit = { scope:fickle = yes }
-				if = {
-					limit = { has_trait = fickle }
-					remove_trait = fickle
-				}
-				else = { add_trait = fickle }
-			}
-			else_if = {
-				limit = { scope:eccentric = yes }
-				if = {
-					limit = { has_trait = eccentric }
-					remove_trait = eccentric
-				}
-				else = { add_trait = eccentric }
-			}
-			else_if = {
-				limit = { scope:vengeful = yes }
-				if = {
-					limit = { has_trait = vengeful }
-					remove_trait = vengeful
-				}
-				else = { add_trait = vengeful }
-			}
-			else_if = {
-				limit = { scope:forgiving = yes }
-				if = {
-					limit = { has_trait = forgiving }
-					remove_trait = forgiving
-				}
-				else = { add_trait = forgiving }
-			}
-			else_if = {
-				limit = { scope:devoted = yes }
-				if = {
-					limit = { NOT = { has_trait = devoted } }
-					add_trait = devoted
-				}
-				else = { remove_trait = devoted }
-			}
-			else_if = {
-				limit = { scope:deviant = yes }
-				if = {
-					limit = { NOT = { has_trait = deviant } }
-					add_trait = deviant
-				}
-				else = { remove_trait = deviant }
-			}
-			else_if = {
-				limit = { scope:cannibal = yes }
-				if = {
-					limit = { NOT = { has_trait = cannibal } }
-					add_trait = cannibal
-				}
-				else = { remove_trait = cannibal }
-			}
-			else_if = {
-				limit = { scope:witch = yes }
-				if = {
-					limit = { NOT = { has_trait = witch } }
-					add_trait = witch
-				}
-				else = { remove_trait = witch }
-			}
-			else_if = {
-				limit = { scope:disinherited = yes }
-				if = {
-					limit = { NOT = { has_trait = disinherited } }
-					add_trait = disinherited
-				}
-				else = { remove_trait = disinherited }
-			}
-			else_if = {
-				limit = { scope:denounced = yes }
-				if = {
-					limit = { NOT = { has_trait = denounced } }
-					add_trait = denounced
-				}
-				else = { remove_trait = denounced }
-			}
-			else_if = {
-				limit = { scope:education_intrigue = yes }
-				if = {
-					limit = { has_trait_rank = { trait = education_intrigue rank < 5 } }
-					change_trait_rank = { trait = education_intrigue rank = 1 }
-				}
-				else = { set_trait_rank = { trait = education_intrigue rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:education_diplomacy = yes }
-				if = {
-					limit = { has_trait_rank = { trait = education_diplomacy rank < 5 } }
-					change_trait_rank = { trait = education_diplomacy rank = 1 }
-				}
-				else = { set_trait_rank = { trait = education_diplomacy rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:education_stewardship = yes }
-				if = {
-					limit = { has_trait_rank = { trait = education_stewardship rank < 5 } }
-					change_trait_rank = { trait = education_stewardship rank = 1 }
-				}
-				else = { set_trait_rank = { trait = education_stewardship rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:education_martial = yes }
-				if = {
-					limit = { has_trait_rank = { trait = education_martial rank < 5 } }
-					change_trait_rank = { trait = education_martial rank = 1 }
-				}
-				else = { set_trait_rank = { trait = education_martial rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:education_learning = yes }
-				if = {
-					limit = { has_trait_rank = { trait = education_learning rank < 5 } }
-					change_trait_rank = { trait = education_learning rank = 1 }
-				}
-				else = { set_trait_rank = { trait = education_learning rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:physique_good = yes }
-				if = {
-					limit = { has_trait_rank = { trait = physique_good rank < 3 } }
-					change_trait_rank = { trait = physique_good rank = 1 }
-				}
-				else = { set_trait_rank = { trait = physique_good rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:intellect_good = yes }
-				if = {
-					limit = { has_trait_rank = { trait = intellect_good rank < 3 } }
-					change_trait_rank = { trait = intellect_good rank = 1 }
-				}
-				else = { set_trait_rank = { trait = intellect_good rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:beauty_good = yes }
-				if = {
-					limit = { has_trait_rank = { trait = beauty_good rank < 3 } }
-					change_trait_rank = { trait = beauty_good rank = 1 }
-				}
-				else = { set_trait_rank = { trait = beauty_good rank = 0 } }
-			}
-			else_if = {
-				limit = { scope:governor = yes }
-				if = {
-					limit = { NOT = { has_trait = governor } }
-					add_trait = governor
-					add_trait_xp = { trait = governor value = 100 }
-				}
-				else = { remove_trait = governor }
-			}
-			else_if = {
-				limit = { scope:lifestyle_blademaster = yes }
-				if = {
-					limit = { NOT = { has_trait = lifestyle_blademaster } }
-					add_trait = lifestyle_blademaster
-					add_trait_xp = { trait = lifestyle_blademaster value = 100 }
-				}
-				else = { remove_trait = lifestyle_blademaster }
-			}
-			else_if = {
-				limit = { scope:lifestyle_reveler = yes }
-				if = {
-					limit = { NOT = { has_trait = lifestyle_reveler } }
-					add_trait = lifestyle_reveler
-					add_trait_xp = { trait = lifestyle_reveler value = 100 }
-				}
-				else = { remove_trait = lifestyle_reveler }
-			}
-			else_if = {
-				limit = { scope:lifestyle_hunter = yes }
-				if = {
-					limit = { NOT = { has_trait = lifestyle_hunter } }
-					add_trait = lifestyle_hunter
-					add_trait_xp = { trait = lifestyle_hunter track = hunter value = 100 }
-					add_trait_xp = { trait = lifestyle_hunter track = falconer value = 100 }
-				}
-				else = { remove_trait = lifestyle_hunter }
+		is_shown = {
+			scope:recipient = {
+				has_trait = witch
 			}
 		}
-	}
-}
-
-bci_nickname = {
-	icon = rename_character
-	auto_accept = yes
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-	is_shown = {
-		scope:actor = { is_ai = no }
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = lewd
-		localization = nick_the_lewd
-	}
-	send_option = {
-		flag = lecher
-		localization = nick_the_lecher
-	}
-	send_option = {
-		flag = bewitched
-		localization = nick_the_bewitched
-	}
-	send_option = {
-		flag = unfaithful
-		localization = nick_the_unfaithful
-	}
-	send_option = {
-		flag = unchaste
-		localization = nick_the_unchaste
-	}
-	send_option = {
-		flag = temptress
-		localization = nick_the_temptress
-	}
-	send_option = {
-		flag = wicked
-		localization = nick_the_wicked
-	}
-	send_option = {
-		flag = accursed
-		localization = nick_the_accursed
-	}
-	send_option = {
-		flag = heathen
-		localization = nick_the_heathen
-	}
-	send_option = {
-		flag = devil
-		localization = nick_the_devil
-	}
-	send_option = {
-		flag = immortal
-		localization = nick_the_immortal
-	}
-	send_option = {
-		flag = witch
-		localization = nick_the_witch
-	}
-	send_option = {
-		flag = sword_of_god
-		localization = nick_the_sword_of_god
-	}
-	send_option = {
-		flag = undefeated
-		localization = nick_the_undefeated
-	}
-	send_options_exclusive = yes
-	on_accept = {
-		scope:recipient = {
-			if = {
-				limit = { scope:lewd = yes }
-				give_nickname = nick_the_lewd
-			}
-			else_if = {
-				limit = { scope:lecher = yes }
-				give_nickname = nick_the_lecher
-			}
-			else_if = {
-				limit = { scope:bewitched = yes }
-				give_nickname = nick_the_bewitched
-			}
-			else_if = {
-				limit = { scope:unfaithful = yes }
-				give_nickname = nick_the_unfaithful
-			}
-			else_if = {
-				limit = { scope:unchaste = yes }
-				give_nickname = nick_the_unchaste
-			}
-			else_if = {
-				limit = { scope:temptress = yes }
-				give_nickname = nick_the_temptress
-			}
-			else_if = {
-				limit = { scope:wicked = yes }
-				give_nickname = nick_the_wicked
-			}
-			else_if = {
-				limit = { scope:accursed = yes }
-				give_nickname = nick_the_accursed
-			}
-			else_if = {
-				limit = { scope:heathen = yes }
-				give_nickname = nick_the_heathen
-			}
-			else_if = {
-				limit = { scope:devil = yes }
-				give_nickname = nick_the_devil
-			}
-			else_if = {
-				limit = { scope:witch = yes }
-				give_nickname = nick_the_witch
-			}
-			else_if = {
-				limit = { scope:undefeated = yes }
-				give_nickname = nick_the_undefeated
-			}
-			else_if = {
-				limit = { scope:sword_of_god = yes }
-				give_nickname = nick_the_sword_of_god
+		flag = excommunicated
+		localization = trait_excommunicated
+		is_shown = {
+			scope:recipient = {
+				has_trait = excommunicated
 			}
 		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
-}
-
-bci_have_sex = {
-	icon = carn_sex_interaction
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = no
-	is_shown = {
-		scope:actor = { is_ai = no is_adult = yes }
-		scope:recipient = { is_adult = yes }
-		NOT = { scope:actor = scope:recipient }
-	}
-	on_accept = {
-		scope:recipient = {
-			had_sex_with_effect = { CHARACTER = scope:actor PREGNANCY_CHANCE = 100 }
-		}
-	}
-	auto_accept = yes
-}
-
-bci_make_laamp = {
-	use_diplomatic_range = no
-	ignores_pending_interaction_block = yes
-	icon = request_invasion_sponsorship_interaction
-
-	is_shown = {
-		scope:actor = { is_ai = no }
-	}
-
-	auto_accept = yes
-
-	on_accept = {
-		scope:recipient = {
-			if = { limit = { is_ruler = yes } }
-			create_landless_adventurer_title_effect = {
-				REASON = flag:voluntary
-				FLAVOR_CHAR = scope:recipient
+	send_option = {
+		flag = murderer
+		localization = trait_murderer
+		is_shown = {
+			scope:recipient = {
+				has_trait = murderer
 			}
 		}
-	}
-}
-
-bci_alert_sexsual = {
-	icon = cdol_alter_sexuality_interaction
-	ignores_pending_interaction_block = yes
-	use_diplomatic_range = no
-
-	is_shown = {
-		scope:actor = { is_ai = no }
-	}
-
-	auto_accept = yes
-
-	send_option = {
-		flag = sbs_buff
-		localization = sbs_buff
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
-		flag = sbs_generals
-		localization = sbs_generals
+		flag = kinslayer_1
+		localization = trait_kinslayer_1
+		is_shown = {
+			scope:recipient = {
+				has_trait = kinslayer_1
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = kinslayer_2
+		localization = trait_kinslayer_2
+		is_shown = {
+			scope:recipient = {
+				has_trait = kinslayer_2
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = kinslayer_3
+		localization = trait_kinslayer_3
+		is_shown = {
+			scope:recipient = {
+				has_trait = kinslayer_3
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = beardless_eunuch
+		localization = trait_beardless_eunuch
+		is_shown = {
+			scope:recipient = {
+				has_trait = beardless_eunuch
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = rejected_from_marriage_bed_modifier
+		localization = rejected_from_marriage_bed_modifier
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = rejected_from_marriage_bed_modifier
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
 		flag = sbs_seal
 		localization = sbs_seal
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = sbs_seal
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
+		flag = sbs_debuff
+		localization = sbs_debuff
 		is_shown = {
-			scope:recipient = { NOT = { has_sexuality = homosexual } }
+			scope:recipient = {
+				has_character_modifier = sbs_debuff
+			}
 		}
-		flag = homosexual
-		localization = homosexual
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
+		flag = stanky_modifier
+		localization = stanky_modifier
 		is_shown = {
-			scope:recipient = { NOT = { has_sexuality = bisexual } }
+			scope:recipient = {
+				has_character_modifier = stanky_modifier
+			}
 		}
-		flag = bisexual
-		localization = bisexual
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 	send_option = {
+		flag = confused_modifier
+		localization = confused_modifier
 		is_shown = {
-			scope:recipient = { NOT = { has_sexuality = heterosexual } }
+			scope:recipient = {
+				has_character_modifier = confused_modifier
+			}
 		}
-		flag = heterosexual
-		localization = heterosexual
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = stress_smelling_of_sweat
+		localization = stress_smelling_of_sweat
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = stress_smelling_of_sweat
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = party_baron_murdered_the_joy_of_life_modifier
+		localization = party_baron_murdered_the_joy_of_life_modifier
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = party_baron_murdered_the_joy_of_life_modifier
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = totally_lost_modifier
+		localization = totally_lost_modifier
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = totally_lost_modifier
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = bad_omen_modifier
+		localization = bad_omen_modifier
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = bad_omen_modifier
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = lost_in_lust_modifier
+		localization = lost_in_lust_modifier
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = lost_in_lust_modifier
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
+	}
+	send_option = {
+		flag = intrigue_starved_and_deprived_modifier
+		localization = intrigue_starved_and_deprived_modifier
+		is_shown = {
+			scope:recipient = {
+				has_character_modifier = intrigue_starved_and_deprived_modifier
+			}
+		}
+		can_be_changed = { scope:actor = { is_ai = no } }
 	}
 
 	on_accept = {
 		scope:recipient = {
-			if = {
-				limit = { scope:sbs_buff = yes }
-				add_character_modifier = { modifier = sbs_buff years = 100 }
-			}
-			else_if = {
-				limit = { scope:sbs_generals = yes }
-				add_character_modifier = { modifier = sbs_generals years = 100 }
-			}
-			else_if = {
-				limit = { scope:sbs_seal = yes }
-				add_character_modifier = sbs_seal
-			}
-			else_if = {
-				limit = { scope:homosexual = yes }
-				set_sexuality = homosexual
-			}
-			else_if = {
-				limit = { scope:bisexual = yes }
-				set_sexuality = bisexual
-			}
-			else_if = {
-				limit = { scope:heterosexual = yes }
-				set_sexuality = heterosexual
-			}
+		if = {
+			limit = { scope:drunkard = yes }
+			remove_trait = drunkard
 		}
-	}	
+		if = {
+			limit = { scope:hashishiyah = yes }
+			remove_trait = hashishiyah
+		}
+		if = {
+			limit = { scope:rakish = yes }
+			remove_trait = rakish
+		}
+		if = {
+			limit = { scope:reclusive = yes }
+			remove_trait = reclusive
+		}
+		if = {
+			limit = { scope:irritable = yes }
+			remove_trait = irritable
+		}
+		if = {
+			limit = { scope:flagellant = yes }
+			remove_trait = flagellant
+		}
+		if = {
+			limit = { scope:profligate = yes }
+			remove_trait = profligate
+		}
+		if = {
+			limit = { scope:improvident = yes }
+			remove_trait = improvident
+		}
+		if = {
+			limit = { scope:contrite = yes }
+			remove_trait = contrite
+		}
+		if = {
+			limit = { scope:comfort_eater = yes }
+			remove_trait = comfort_eater
+		}
+		if = {
+			limit = { scope:inappetetic = yes }
+			remove_trait = inappetetic
+		}
+		if = {
+			limit = { scope:depressed_1 = yes }
+			remove_trait = depressed_1
+		}
+		if = {
+			limit = { scope:depressed_genetic = yes }
+			remove_trait = depressed_genetic
+		}
+		if = {
+			limit = { scope:lunatic_1 = yes }
+			remove_trait = lunatic_1
+		}
+		if = {
+			limit = { scope:lunatic_genetic = yes }
+			remove_trait = lunatic_genetic
+		}
+		if = {
+			limit = { scope:possessed_1 = yes }
+			remove_trait = possessed_1
+		}
+		if = {
+			limit = { scope:possessed_genetic = yes }
+			remove_trait = possessed_genetic
+		}
+		if = {
+			limit = { scope:one_eyed = yes }
+			remove_trait = one_eyed
+		}
+		if = {
+			limit = { scope:scarred = yes }
+			remove_trait = scarred
+		}
+		if = {
+			limit = { scope:maimed = yes }
+			remove_trait = maimed
+		}
+		if = {
+			limit = { scope:one_legged = yes }
+			remove_trait = one_legged
+		}
+		if = {
+			limit = { scope:disfigured = yes }
+			remove_trait = disfigured
+		}
+		if = {
+			limit = { scope:eunuch = yes }
+			remove_trait = eunuch
+		}
+		if = {
+			limit = { scope:eunuch_1 = yes }
+			remove_trait = eunuch_1
+		}
+		if = {
+			limit = { scope:blind = yes }
+			remove_trait = blind
+		}
+		if = {
+			limit = { scope:sickly = yes }
+			remove_trait = sickly
+		}
+		if = {
+			limit = { scope:infirm = yes }
+			remove_trait = infirm
+		}
+		if = {
+			limit = { scope:incapable = yes }
+			remove_trait = incapable
+		}
+		if = {
+			limit = { scope:leper = yes }
+			remove_trait = leper
+		}
+		if = {
+			limit = { scope:wounded_1 = yes }
+			remove_trait = wounded_1
+		}
+		if = {
+			limit = { scope:wounded_2 = yes }
+			remove_trait = wounded_2
+		}
+		if = {
+			limit = { scope:wounded_3 = yes }
+			remove_trait = wounded_3
+		}
+		if = {
+			limit = { scope:ill = yes }
+			recover_from_disease_effect = { DISEASE = ill }
+		}
+		if = {
+			limit = { scope:pneumonic = yes }
+			recover_from_disease_effect = { DISEASE = pneumonic }
+		}
+		if = {
+			limit = { scope:gout_ridden = yes }
+			recover_from_disease_effect = { DISEASE = gout_ridden }
+		}
+		if = {
+			limit = { scope:typhus = yes }
+			recover_from_disease_effect = { DISEASE = typhus }
+		}
+		if = {
+			limit = { scope:consumption = yes }
+			recover_from_disease_effect = { DISEASE = consumption }
+		}
+		if = {
+			limit = { scope:measles = yes }
+			recover_from_disease_effect = { DISEASE = measles }
+		}
+		if = {
+			limit = { scope:cancer = yes }
+			recover_from_disease_effect = { DISEASE = cancer }
+		}
+		if = {
+			limit = { scope:great_pox = yes }
+			recover_from_disease_effect = { DISEASE = great_pox }
+		}
+		if = {
+			limit = { scope:smallpox = yes }
+			recover_from_disease_effect = { DISEASE = smallpox }
+		}
+		if = {
+			limit = { scope:bubonic_plague = yes }
+			recover_from_disease_effect = { DISEASE = bubonic_plague }
+		}
+		if = {
+			limit = { scope:lovers_pox = yes }
+			recover_from_disease_effect = { DISEASE = lovers_pox }
+		}
+		if = {
+			limit = { scope:early_great_pox = yes }
+			recover_from_disease_effect = { DISEASE = early_great_pox }
+		}
+		if = {
+			limit = { scope:dysentery = yes }
+			recover_from_disease_effect = { DISEASE = dysentery }
+		}
+		if = {
+			limit = { scope:ergotism = yes }
+			recover_from_disease_effect = { DISEASE = ergotism }
+		}
+		if = {
+			limit = { scope:albino = yes }
+			remove_trait = albino
+		}
+		if = {
+			limit = { scope:lisping = yes }
+			remove_trait = lisping
+		}
+		if = {
+			limit = { scope:stuttering = yes }
+			remove_trait = stuttering
+		}
+		if = {
+			limit = { scope:giant = yes }
+			remove_trait = giant
+		}
+		if = {
+			limit = { scope:scaly = yes }
+			remove_trait = scaly
+		}
+		if = {
+			limit = { scope:clubfooted = yes }
+			remove_trait = clubfooted
+		}
+		if = {
+			limit = { scope:dwarf = yes }
+			remove_trait = dwarf
+		}
+		if = {
+			limit = { scope:hunchbacked = yes }
+			remove_trait = hunchbacked
+		}
+		if = {
+			limit = { scope:infertile = yes }
+			remove_trait = infertile
+		}
+		if = {
+			limit = { scope:wheezing = yes }
+			remove_trait = wheezing
+		}
+		if = {
+			limit = { scope:spindly = yes }
+			remove_trait = spindly
+		}
+		if = {
+			limit = { scope:bleeder = yes }
+			remove_trait = bleeder
+		}
+		if = {
+			limit = { scope:weak = yes }
+			remove_trait = weak
+		}
+		if = {
+			limit = { scope:dull = yes }
+			remove_trait = dull
+		}
+		if = {
+			limit = { scope:beauty_bad_1 = yes }
+			remove_trait = beauty_bad_1
+		}
+		if = {
+			limit = { scope:beauty_bad_2 = yes }
+			remove_trait = beauty_bad_2
+		}
+		if = {
+			limit = { scope:beauty_bad_3 = yes }
+			remove_trait = beauty_bad_3
+		}
+		if = {
+			limit = { scope:intellect_bad_1 = yes }
+			remove_trait = intellect_bad_1
+		}
+		if = {
+			limit = { scope:intellect_bad_2 = yes }
+			remove_trait = intellect_bad_2
+		}
+		if = {
+			limit = { scope:intellect_bad_3 = yes }
+			remove_trait = intellect_bad_3
+		}
+		if = {
+			limit = { scope:physique_bad_1 = yes }
+			remove_trait = physique_bad_1
+		}
+		if = {
+			limit = { scope:physique_bad_2 = yes }
+			remove_trait = physique_bad_2
+		}
+		if = {
+			limit = { scope:physique_bad_3 = yes }
+			remove_trait = physique_bad_3
+		}
+		if = {
+			limit = { scope:inbred = yes }
+			remove_trait = inbred
+		}
+		if = {
+			limit = { scope:adulterer = yes }
+			remove_trait = adulterer
+		}
+		if = {
+			limit = { scope:fornicator = yes }
+			remove_trait = fornicator
+		}
+		if = {
+			limit = { scope:incestuous = yes }
+			remove_trait = incestuous
+		}
+		if = {
+			limit = { scope:sodomite = yes }
+			remove_trait = sodomite
+		}
+		if = {
+			limit = { scope:deviant = yes }
+			remove_trait = deviant
+		}
+		if = {
+			limit = { scope:cannibal = yes }
+			remove_trait = cannibal
+		}
+		if = {
+			limit = { scope:witch = yes }
+			remove_trait = witch
+		}
+		if = {
+			limit = { scope:excommunicated = yes }
+			remove_trait = excommunicated
+		}
+		if = {
+			limit = { scope:murderer = yes }
+			remove_trait = murderer
+		}
+		if = {
+			limit = { scope:kinslayer_1 = yes }
+			remove_trait = kinslayer_1
+		}
+		if = {
+			limit = { scope:kinslayer_2 = yes }
+			remove_trait = kinslayer_2
+		}
+		if = {
+			limit = { scope:kinslayer_3 = yes }
+			remove_trait = kinslayer_3
+		}
+		if = {
+			limit = { scope:beardless_eunuch = yes }
+			remove_trait = beardless_eunuch
+		}
+		if = {
+			limit = { scope:rejected_from_marriage_bed_modifier = yes }
+			remove_character_modifier = rejected_from_marriage_bed_modifier
+		}
+		if = {
+			limit = { scope:sbs_seal = yes }
+			remove_character_modifier = sbs_seal
+		}
+		if = {
+			limit = { scope:sbs_debuff = yes }
+			remove_character_modifier = sbs_debuff
+		}
+		if = {
+			limit = { scope:stanky_modifier = yes }
+			remove_character_modifier = stanky_modifier
+		}
+		if = {
+			limit = { scope:confused_modifier = yes }
+			remove_character_modifier = confused_modifier
+		}
+		if = {
+			limit = { scope:stress_smelling_of_sweat = yes }
+			remove_character_modifier = stress_smelling_of_sweat
+		}
+		if = {
+			limit = { scope:party_baron_murdered_the_joy_of_life_modifier = yes }
+			remove_character_modifier = party_baron_murdered_the_joy_of_life_modifier
+		}
+		if = {
+			limit = { scope:totally_lost_modifier = yes }
+			remove_character_modifier = totally_lost_modifier
+		}
+		if = {
+			limit = { scope:bad_omen_modifier = yes }
+			remove_character_modifier = bad_omen_modifier
+		}
+		if = {
+			limit = { scope:lost_in_lust_modifier = yes }
+			remove_character_modifier = lost_in_lust_modifier
+		}
+		if = {
+			limit = { scope:intrigue_starved_and_deprived_modifier = yes }
+			remove_character_modifier = intrigue_starved_and_deprived_modifier
+		}
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+

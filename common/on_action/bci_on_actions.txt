@@ -1,4 +1,15 @@
-﻿random_yearly_everyone_pulse = {
+﻿deviants_innslut_on_action = {
+	trigger = {
+		has_trait = lustful_inn_slut
+		age >= 18
+		is_incapable = no
+		is_imprisoned = no
+	}
+	effect = {
+		trigger_event = deviants_campslut.8999
+	}	
+}
+random_yearly_everyone_pulse = {
 	on_actions = {
 		bci_viet_ruler_on_action
 		bci_viet_health_on_action

@@ -1,0 +1,73 @@
+# Patches vanilla characters without replacing the culture history files.
+# history_override_priority: base attributes stay vanilla; these dates are added.
+
+161257 = { # Wyszeslawa
+	history_override_priority = 1
+	1063.1.1 = {
+		effect = {
+			set_relation_lover = { reason = lover_history target = character:522 }
+		}
+	}
+	1065.1.1 = {
+		faith = adamites
+		effect = {
+			bci_lust_effect = yes
+		}
+	}
+}
+
+1183 = { # Bertha
+	history_override_priority = 1
+	1065.1.1 = {
+		faith = adamites
+		effect = {
+			bci_lust_effect = yes
+		}
+	}
+}
+
+41552 = { # Martha
+	history_override_priority = 1
+	1066.1.1 = {
+		faith = adamites
+		effect = {
+			bci_lust_effect = yes
+		}
+	}
+}
+
+7757 = { # Matilda
+	history_override_priority = 1
+	1065.1.1 = {
+		faith = adamites
+		effect = {
+			bci_lust_effect = yes
+			set_relation_lover = { reason = lover_history target = character:11030 }
+		}
+	}
+}
+
+367 = { # Mathilde
+	history_override_priority = 1
+	1065.1.1 = {
+		faith = adamites
+		effect = {
+			bci_lust_effect = yes
+		}
+	}
+}
+
+765 = { # Swietoslawa
+	history_override_priority = 1
+	1064.1.2 = {
+		effect = {
+			set_relation_lover = { reason = lover_history target = character:762 }
+		}
+	}
+	1066.1.1 = {
+		faith = adamites
+		effect = {
+			bci_lust_effect = yes
+		}
+	}
+}

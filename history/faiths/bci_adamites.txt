@@ -1,0 +1,19 @@
+adamites = {
+    1.1.1 = {
+        rites = {
+            adamites = {
+                tenet_setup = {
+                    tenets = {
+                        tenet_carnal_exaltation
+                        tenet_polyamory
+                        tenet_natural_primitivism
+                    }
+                }
+				doctrines = { doctrine_polygamy }
+				known = {
+					tenet_divine_marriage
+				}
+            }
+        }
+    }
+}

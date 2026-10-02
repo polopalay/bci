@@ -1,4 +1,4 @@
-﻿#Events for pregnancy on actions
+#Events for pregnancy on actions
 
 namespace = pregnancy
 
@@ -43,8 +43,8 @@ pregnancy.0001 = {
 				#More likely if you have sacred childbirth
 				modifier = {
 					factor = 2 # Religious doctrine focusing on providing a sanitary birthing chamber and supplies should have a substantial impact on birth complications.
-					faith = {
-						has_doctrine_parameter = safer_childbirths_active
+					rite = {
+						rite_has_parameter = safer_childbirths_active
 					}
 				}
 				#More likely if the Dynasty has the Kin legacy
@@ -68,6 +68,12 @@ pregnancy.0001 = {
 				}
 			}
 			3 = { #Child dies during delivery (this triggers when the birth "should" have gone down, since we don't want to create the baby)
+				modifier = {
+					factor = 0.5 # Religious doctrine focusing on providing a sanitary birthing chamber and supplies should have a substantial impact on birth complications.
+					rite = {
+						rite_has_parameter = healthier_children_active
+					}
+				}
 				trigger_event = {
 					id = birth.3001
 					days = { 180 200 }
@@ -78,7 +84,7 @@ pregnancy.0001 = {
 					add = -2
 					OR = {
 						is_ai = no
-						has_character_modifier = sbs_buff	
+						has_character_modifier = bci_long_life
 					}
 				}
 				add_character_flag = { #Flags blocks other birth events
@@ -91,7 +97,7 @@ pregnancy.0001 = {
 					add = -2
 					OR = {
 						is_ai = no
-						has_character_modifier = sbs_buff	
+						has_character_modifier = bci_long_life
 					}
 				}
 				trigger_event = {
@@ -102,8 +108,8 @@ pregnancy.0001 = {
 			10 = { #Sickly child (all other events happen as usual)
 				modifier = {
 					factor = 0.5 # Religious doctrine focusing on providing a sanitary birthing chamber and supplies should have a substantial impact on birth complications.
-					faith = {
-						has_doctrine_parameter = healthier_children_active
+					rite = {
+						rite_has_parameter = healthier_children_active
 					}
 				}
 				add_character_flag = { #Flags blocks other birth events
@@ -116,7 +122,7 @@ pregnancy.0001 = {
 					add = -4
 					OR = {
 						is_ai = no
-						has_character_modifier = sbs_buff	
+						has_character_modifier = bci_long_life
 					}
 				}
 				add_character_flag = { #Flags blocks other birth events
@@ -154,7 +160,7 @@ pregnancy.1001 = {
 	}
 
 	trigger = {
-		NOT = { has_variable = borte_first_child_var }
+		NOT = { has_variable = suppress_bastardy }
 		any_consort = {
 			this = scope:real_father
 		}
@@ -183,8 +189,7 @@ pregnancy.1002 = {
 		first_valid = {
 			triggered_desc = {
 				trigger = {
-					this = character:125501 # You are Temüjin
-					scope:mother = { has_variable = borte_first_child_var }
+					scope:mother = { has_variable = suppress_bastardy }
 				}
 				desc = pregnancy.1002.d.borte
 			}
@@ -197,7 +202,7 @@ pregnancy.1002 = {
 		character = scope:mother
 		triggered_animation = {
 			trigger = {
-				scope:mother = { has_variable = borte_first_child_var }
+				scope:mother = { has_variable = suppress_bastardy }
 			}
 			animation = worry
 		}	
@@ -209,10 +214,7 @@ pregnancy.1002 = {
 			trigger = {
 				OR = {
 					has_any_bad_relationship_with_character_trigger = { CHARACTER = root }
-					AND = {
-						scope:mother = { has_variable = borte_first_child_var }
-						this = character:125501
-					}
+					scope:mother = { has_variable = suppress_bastardy }
 				}
 			}
 			animation = stress
@@ -227,14 +229,14 @@ pregnancy.1002 = {
 	option = {
 		name = {
 			trigger = {
-				scope:mother = { has_variable = borte_first_child_var }
+				scope:mother = { has_variable = suppress_bastardy }
 			}
 			text = pregnancy.1002.a.borte
 		}
 		name = {
 			trigger = {
 				NOT = {
-					scope:mother = { has_variable = borte_first_child_var }
+					scope:mother = { has_variable = suppress_bastardy }
 				}
 			}
 			text = pregnancy.1002.a
@@ -242,44 +244,6 @@ pregnancy.1002 = {
 		show_as_tooltip = {
 			scope:mother = {
 				add_trait_force_tooltip = pregnant
-			}
-		}
-	}
-}
-
-scripted_trigger former_consort_was_father = {
-	OR = {	
-		any_former_spouse = {
-			even_if_dead = yes
-			this = scope:father
-			this = scope:real_father
-			trigger_if = {
-				limit = {
-					is_alive = yes
-				}
-				NOT = { any_consort = { this = root } }
-			}
-		}
-		any_former_concubinist = {
-			even_if_dead = yes
-			this = scope:father
-			this = scope:real_father
-			trigger_if = {
-				limit = {
-					is_alive = yes
-				}
-				NOT = { any_consort = { this = root } }
-			}
-		}
-		any_former_concubine = {
-			even_if_dead = yes
-			this = scope:father
-			this = scope:real_father
-			trigger_if = {
-				limit = {
-					is_alive = yes
-				}
-				NOT = { any_consort = { this = root } }
 			}
 		}
 	}
@@ -482,9 +446,8 @@ pregnancy.2001 = {
 		NOR = {
 			# If we are married or have concubines (or are a concubine) this event is not valid, as there is a (assumed) father.
 			any_consort = { }
-			# Same for if a former spouse/concubine got us pregant.
-			former_consort_was_father = yes
 		}
+		pregnancy_is_bastard = yes
 	}
 
 	immediate = {
@@ -626,14 +589,8 @@ pregnancy.2002 = {
 		any_consort = {
 			is_male = yes
 		}
-		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }	
-		}
 
-		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {	
-			former_consort_was_father = yes
-		}
+		pregnancy_is_bastard = yes
 	}
 
 	immediate = {
@@ -751,7 +708,7 @@ pregnancy.2002 = {
 			days = 22
 		}
 		married_mother_pregnancy_effect = yes
-		stress_impact = {
+		stress_and_fulfillment_impact = {
 			honest = medium_stress_impact_gain
 		}
 		ai_chance = {
@@ -789,7 +746,7 @@ pregnancy.2002 = {
 		name = pregnancy.2002.c
 		custom_tooltip = pregnancy.2002.c.tt
 		married_mother_pregnancy_effect = yes
-		stress_impact = {
+		stress_and_fulfillment_impact = {
 			honest = major_stress_impact_gain
 		}
 		ai_chance = {
@@ -799,7 +756,7 @@ pregnancy.2002 = {
 			}
 			modifier = {
 				add = 50
-				scope:father = { is_lowborn = no }
+				scope:father ?= { is_lowborn = no }
 				scope:real_father = { is_lowborn = yes }
 			}
 			modifier = {
@@ -960,17 +917,13 @@ pregnancy.2050 = {
 
 	trigger = {
 		# If we are married and/or have concubines, but all of them are women as well, it's a bastard!
+		any_consort = {}  # count = all return true if list is empty!
 		any_consort = {
-			NOT = { is_male = yes }
-		}
-		pregnancy_real_father = {
-			NOT = {	is_consort_of = root }	
+			is_female = yes
+			count = all
 		}
 
-		# OBJECTION! If a former spouse/concubine is both the real and assumed father, it's not actually a bastard!
-		NOT = {	
-			former_consort_was_father = yes
-		}
+		pregnancy_is_bastard = yes
 	}
 
 	immediate = {
@@ -1307,8 +1260,8 @@ pregnancy.3003 = {
 		first_valid = {
 			triggered_desc = {
 				trigger = {
-					faith = {
-						has_doctrine_parameter = bastards_none
+					rite = {
+						rite_has_parameter = bastards_none
 					}
 				}
 				desc = pregnancy.3003.desc_no_bastards
@@ -1645,7 +1598,6 @@ pregnancy.6002 = {
 
 	option = {
 		name = pregnancy.6002.a
-		trigger = { is_married = no }
 	}
 
 	after = {
@@ -1688,7 +1640,7 @@ pregnancy.6004 = {
 							CHARACTER = scope:real_father
 						}
 					}
-					trait_is_criminal_in_faith_trigger = { TRAIT = incestuous FAITH = root.faith GENDER_CHARACTER = scope:mother }
+					trait_is_criminal_in_rite_trigger = { TRAIT = trait:incestuous RITE = root.rite GENDER_CHARACTER = scope:mother }
 				}
 				desc = pregnancy.6004.incest
 			}
